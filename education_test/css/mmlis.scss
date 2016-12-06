@@ -1,0 +1,269 @@
+/*
+*	MMLIS SASS Markdown
+*
+*
+
+*/
+
+$font-stack: Helvetica, Arial, sans-serif;
+$superdark: #0C4743;
+$dark: #2F685F;
+$midtone: #719D9A;
+$light: #DDEAE9; /*#9ED9D5;*/
+$superlight: #D0E3E7;
+$forebackground: #DDEAE9;
+$white: #FFFFFF;
+$large-container: 768px;
+
+body {
+	margin:0;
+	background-image: url('../images/common/bkg.jpg');
+}
+
+a {color:$superdark;}
+a:hover {color:$dark;}
+
+
+#full-container {
+	width:100%;
+	font-family: $font-stack;
+	font-size:0.75em;
+
+	&.top-gradient {
+		background: transparent url(../images/common/hdrbg.jpg) left top repeat-x;
+	}
+
+	.container-768 {
+		width:$large-container;
+		margin:0 auto;
+	}
+
+	p {
+
+	}
+
+	form {
+		margin:0;
+		padding:0 .75em;
+	}
+
+	input {
+		background-color: $light;
+		border:1px solid $midtone;
+		width:100%;
+		height:1.75em;
+		margin:0 0 .5em 0;
+		padding-left:.25em;
+		font-size:1.1em;
+	}
+
+	label {
+		color:$superdark;
+		font-size:.9em;
+		font-weight:bold;
+		
+	}
+
+	.small {
+		font-size:.9em;
+		margin: .25em 0;
+	}
+
+}
+
+.cells {
+	display:table;
+	width:$large-container;
+	background:$forebackground;
+	height:100%;
+
+	.row>div {
+		display:table-cell;
+		/* float:left; */
+		border:1px solid $white;
+		border-bottom:0 none;
+		border-right:0 none;
+	}
+
+
+	div.row {
+		clear:left;
+	}
+
+	.row>div:nth-child(1) {
+		border-left:0 none;
+	}
+	div>div:last-child {
+		border-right:0 none;
+	}
+
+	div>h3 {
+		font-size: 1.2em;
+		font-weight: bold;
+		padding:.25em .75em;
+		background-color:$midtone;
+		color:#fff;
+		margin:0 0 .75em 0;
+		text-transform: uppercase;
+		border-bottom:1px solid $white;
+	}
+
+	div>p {
+		padding:0 .75em;
+		margin: .5em 0;
+		font-size:1.1em;
+	}
+
+}
+
+.hp-btn {
+	background:$dark;
+	color:$superlight;
+	border: 1px solid $midtone;
+	width:100%;
+	background-image:linear-gradient(180deg,rgb(67,122,113) 0%,rgb(67,122,113) 52%,rgb(38,96,87) 100%);
+	border-radius: .75em;
+	padding:.5em;
+	margin:1em 0;
+}
+
+.hp-btn:hover {border-color:$light;}
+
+.quarter {
+	width:191px; 
+	border:1px solid blue;
+	border-left:0px solid blue;
+	border-collapse:collapse;
+}
+.half {
+	width:383px;
+	border:1px solid orange;
+	border-left:0px solid blue;
+}
+.three-quarters {
+	width:576px;
+	border-collapse:collapse;
+}
+.login-right {
+	background:#9FC5C0;
+	height:300px;
+	border: 1px solid $white;
+	border-right:0px solid $white;
+	float:right !important;
+	height:100%;
+}
+
+.end-row {
+	clear:both;
+}
+
+
+#mm-heading {
+	height:65px;
+}
+
+#main-slider{
+	clear:both;
+	width:768px;
+	height:260px;
+	background:#ccc;	
+}
+
+/*  CSS for main navigation bar & Drop-down menus */
+/* ----------- Top Level --------*/
+ul#navigation {
+	height: 21px;
+	border-top: 1px solid $white;
+	border-bottom: 1px solid $white;
+	list-style: none;
+	margin: 0px;
+	padding: 0px 0px 0px 60px;
+	background-color: $light;
+}
+ul#navigation li.topmenu {
+	float: left;
+	height: 21px;
+	padding: 0px;
+	background-color: $light;
+	border-right: 1px solid $white;
+	position: relative;
+	cursor: pointer;
+}	
+ul#navigation li.topmenu:hover {
+	background-color: #D0E3E7;
+}	
+ul#navigation li span {
+	display:none;
+}	
+ul#navigation li.topmenu a {
+	float: left;
+	font-family: "Lato", Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	color: #0C4743;
+	text-decoration: none;
+}	
+/*  Top level links on main horizontal navigation, not drop-down */
+ul#navigation li.topmenu a.first {
+	display:block;
+	height:21px;
+	padding:2px 16px;
+}
+ul#navigation li.first-child {
+	border-left:1px solid $white;
+}
+
+/* ----------- Second Level (Drop-Downs) --------*/
+ .subnav { 
+	 width:170px;
+     list-style: none;  
+     position: absolute;
+     left: 0;  
+     background: #D0E3E7;  
+     margin: 0; padding: 0;  
+     display: none;  
+     float: left;  
+	 top:21px;
+	 left:-2px;
+	 border-bottom:1px solid #B9D3E3;
+	 border-left:1px solid #B9D3E3;
+	 border-right:1px solid #B9D3E3;
+	 font-size:11px;
+	 font-family:Arial, Helvetica, sans-serif;
+	 color:#173d5b;
+	 z-index:999;
+	 -webkit-border-radius:0px 0px 7px 7px;
+	 -moz-border-radius:0px 0px 7px 7px;
+	 border-radius:0px 0px 7px 7px;
+}
+ .subnav li {
+ 	float:left;
+}	
+ .subnav li a{
+ 	border-left:1px solid $white;
+	border-right:1px solid $white;
+    margin: 0px;
+    padding: 4px 0px 4px 15px;
+    width:155px; /* .subnav width (170px) - 15px padding on line above */
+    clear: both;
+    font-size:12px !important;
+	z-index:1000;
+}
+.subnav li:last-child a{
+	border-bottom:1px solid $white;
+	padding: 4px 0px 8px 15px;  
+ 	-webkit-border-radius:0px 0px 7px 7px;
+	-moz-border-radius:0px 0px 7px 7px;
+	border-radius:0px 0px 7px 7px;
+}
+ .subnav li a:visited {
+ 	color:#0062B3 !important;
+}
+.subnav li a:hover {  
+	background:#2F685F;
+	color:$white !important;  
+	cursor:pointer;
+}
+
+/* END Redesigned homepage */
+
