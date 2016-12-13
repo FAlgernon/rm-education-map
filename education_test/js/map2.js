@@ -32,12 +32,8 @@ function initialize() {
     // a new Info Window is created
     infoWindow = new google.maps.InfoWindow();
     
-    // Event that closes the InfoWindow with a click on the map
-    google.maps.event.addListener(map, 'click', function() {
-        infoWindow.close();
-    });
-    
     updateInfoWindowStyle();
+    updateMapOnInfoClose();
     
     //construct display_json from json
     json_reset();
@@ -96,13 +92,13 @@ function updateInfoWindowStyle() {
         iwOuter.parent().parent().css({left: '64px'});
 
         // Moves the shadow of the arrow 76px to the left margin.
-        iwBackground.children(':nth-child(1)').attr('style', function(i,s){ return s + 'left: 90px !important;'});
+        iwBackground.children(':nth-child(1)').attr('style', function(i,s){ return s + 'left: 112px !important;'});
 
         // Moves the arrow 76px to the left margin.
-        iwBackground.children(':nth-child(3)').attr('style', function(i,s){ return s + 'left: 90px !important;'});
+        iwBackground.children(':nth-child(3)').attr('style', function(i,s){ return s + 'left: 112px !important; top:236px;'});
 
         // Changes the desired tail shadow color.
-        iwBackground.children(':nth-child(3)').find('div').children().css({'box-shadow': 'rgba(113, 157, 154, 0.6) 0px 1px 6px', 'z-index' : '1'});
+        iwBackground.children(':nth-child(3)').find('div').children().css({'box-shadow': 'rgba(113, 157, 154, 0.6) 0px 1px 6px', 'z-index' : '0'});
 
         // Reference to the div that groups the close button elements.
         var iwCloseBtn = iwOuter.next();
@@ -111,16 +107,23 @@ function updateInfoWindowStyle() {
         iwCloseBtn.css({width: '20px', height: '20px', opacity: '1', right: '40px', top: '2px', border: '4px solid #B6D4D3', 'border-radius': '13px', 'box-shadow': '0 0 5px #9EC6C5', 'background-color': '#B6D4D3'});
         iwCloseBtn.html(closeBtn);
 
-        // If the content of infowindow not exceed the set maximum height, then the gradient is removed.
-        if($('.iw-content').height() < 140){
-          $('.iw-bottom-gradient').css({display: 'none'});
-        }
-
         // The API automatically applies 0.7 opacity to the button after the mouseout event. This function reverses this event to the desired value.
         iwCloseBtn.mouseout(function(){
           $(this).css({opacity: '1'});
         });
 
+    });
+}
+
+function updateMapOnInfoClose() {
+    google.maps.event.addListener(infoWindow, 'closeclick', function() {
+        map.setZoom(7);
+        map.setCenter(globalLatLng);
+        
+        $("#location-select").val("Any");
+        json_reset(); //reset display_json
+        updateFilter(); //update the filter options
+        draw(display_json); //draw the list of results
     });
 }
 
@@ -143,15 +146,11 @@ function updateMap(json) {
     // a new Info Window is created
     infoWindow = new google.maps.InfoWindow();
     
-    // Event that closes the InfoWindow with a click on the map
-    google.maps.event.addListener(map, 'click', function() {
-        infoWindow.close();
-    });
-    
     //construct display_json from json
     json_reset();
     
     updateInfoWindowStyle();
+    updateMapOnInfoClose();
     
     resetArrays();
     loadUpdatedArrays(json);
@@ -318,7 +317,7 @@ function displayMarkers() {
         var name = arrLocations[i].facility;
         var address = parseAddress(arrLocations[i].address)
         
-        createMarker(latlng, name, address.city, address.state, address.zip, i);
+        createMarker(latlng, name, address, i);
         
         // Marker’s Lat. and Lng. values are added to bounds variable
         bounds.extend(latlng);
@@ -330,17 +329,22 @@ function displayMarkers() {
 }
 
 // This function creates each marker and sets their Info Window content
-function createMarker(latlng, name, address, state, zip, num) {
+function createMarker(latlng, name, address, num) {
     var marker = new google.maps.Marker({
         map: map,
         position: latlng,
-        title: state
+        title: address.state,
+        animation: google.maps.Animation.DROP
     });
     
     // This event expects a click on a marker
    // When this event is fired the infowindow content is created
    // and the infowindow is opened
     google.maps.event.addListener(marker, 'click', function() {
+        $("#location-select").val(address.state);
+        updateFilter();
+        draw(display_json);
+        
         // Variable to define the HTML content to be inserted in the infowindow
         var iwContent = getIWContent(num, 0);
         
@@ -394,13 +398,16 @@ function getIWContent(num, type) {
         
         if(arrLocations[num].locationName === positionName) {
             if(!mouse) {
-                contentString = contentString +
-                    '<div class="row" style="padding-bottom: 5px;"><div class="col-sm-3 eventDate"><span class="dateMon">' + (eventDate.getMonth() + 1) + 
-                    '</span><span class="slash">/</span><span class="dateNum">' + eventDate.getDate() + '</span></div>' +
-					'<div class="col-sm-9 eventInfo"><div class="row"><div class="col-sm-12"><div class="eventTopic">' + arrEvents[i].topic + '</div></div></div>' +
-					'<div class="row"><div class="col-sm-12"><div class="eventCode">' + arrEvents[i].code + '</div></div></div>' + 
-                    '<div class="row eventBtn"><div class="col-sm-6"><a href="#" class="btn btn-success">Register</a></div><div class="col-sm-6"><a href="#" class="btn btn-info">Learn More</a></div></div><br/>' +
-                    '</div><hr>';
+                contentString = contentString + '<div class="row" style="padding-bottom: 5px;">' +
+                    '<div class="col-sm-3 eventDate"><span class="dateMon">' + 
+                    (eventDate.getMonth() + 1) + '</span><span class="slash">/</span>' +
+                    '<span class="dateNum">' + eventDate.getDate() + '</span></div>' +
+                    '<div class="col-sm-9 eventInfo"><div class="row"><div class="col-sm-12">' +
+                    '<div class="eventTopic">' + arrEvents[i].topic + '</div></div></div>' +
+                    '<div class="row"><div class="col-sm-12"><div class="eventCode">' + arrEvents[i].code + '</div></div></div><div class="row eventBtn">' + 
+                    '<div class="col-sm-6"><a href="#" class="btn btn-success">Register</a></div>' +
+                    '<div class="col-sm-6"><a href="#" class="btn btn-info">Learn More</a></div>' +
+                    '</div></div></div><hr>';
             } else {
                 contentString = contentString + 
 					'<li>' + arrEvents[i].topic + '</li>';
