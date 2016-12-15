@@ -1,39 +1,111 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="css/rm-map.css">
-<script type="text/javascript" src="js/underscore.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/rm-map.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css">
+    <script>
+        function google_init(){
+            
+            //start app on google load
+            console.log("gmap init");
+            
+        }
+        
+    </script>
+    
+    
+    
 <title>MMLIS RM Program Finder</title>
 </head>
 <body>
 	<div id="map-container">
 		<div id="map-filter-controls">
-			<form id="map-filter">inputs</form>
-			<div id="map-google-retro"></div>
+            <form id="filter-controls" class="col-md-4">
+                
+                <!--Search Date Filter-->
+                <div class="col-md-12">
+                    <label>Date</label>
+                    <div class="date_group input-group input-append date shadow" id="datePicker">
+
+                        <input id="date-select" type="text" class="form-control" name="date" value="Any" placeholder="Any">
+
+                        <span class="input-group-addon add-on"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i></span>
+                    </div>
+                </div>
+
+                <!--Search Topic Filter-->
+                <div class="col-md-12">
+                    <label>Topic</label>
+                    <select id="topic-select" class="form-control shadow" data-live-search="true">
+                        <option>Any</option>
+                    </select>
+                </div>
+
+                <!--Search Location Filter-->
+                 <div class="col-md-12">
+                    <label>Location</label>
+                    <select id="location-select" class="form-control shadow" data-live-search="true">
+                        <option>Any</option>
+                    </select>
+                </div>
+
+                <!-- Search Code Filter -->
+                <div class="col-md-12">
+                    <label>Code</label>
+                    <select id="code-select" class="form-control shadow" data-live-search="true">
+                        <option>Any</option>
+                    </select>
+                </div>
+                
+            </form>
+            
+            
+			<div id="map-control"  class="col-md-8">
+                <div id="map"></div>
+                <div id="status"></div>
+            </div>
+            
 		</div>
 
 		<div id="map-results-container">
-			<div class="map-results-each">
-				<ul>
-					<li>MAR</li>
-					<li>6<sup>th </sup><sub>MON</sub></li>
-					<li>2017</li>
-					<li>March 6th, 2017</li>
-				</ul>
+			<div class="map-results-each col-md-12">
+                <div class="result-date col-md-2">
+                    <ul>
+                        <li>MAR</li>
+                        <li>6<sup>th </sup><sub>MON</sub></li>
+                        <li>2017</li>
+                        <li>March 6th, 2017</li>
+                    </ul>
+                </div>
 
-				<div>
-					<h3>Result Item Title</h3>
-					<span>Event location, address, 1234</span>
+				<div class="col-md-8">
+					<h3>Legal Issues: Recurring Medical Malpractice Topics - Six Case Examples</h3>
+					<span>225 International Cir, Cockeysville, MD 21030</span>
 				</div>
 
-				<div>
-					<h4>12345</h4>
-					<a href="#">Program Description</a>
-					<a href="#">Register</a>
+				<div class="col-md-2">
+					<h4>5310</h4>
+					<a href="#" class="rm-ico ico-eye">Program Description</a>
+					<a href="#" class="rm-ico ico-check">Register</a>
 				</div>
-
 
 
 			</div>
 		</div>
 	</div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLahhfoVtxfV4AIjS-3v8MXCb-zn2ggH8&callback=google_init">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.0/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
+
+    <script src="data/events.json"></script>
+    <script src="data/gmap-styles.js"></script>
+    <script src="js/rm-map.js"></script>
+    
+
+
+    
 </body>
