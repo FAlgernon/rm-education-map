@@ -20,8 +20,14 @@ var rmProgramFinder = (function() {
             console.log(json);
             gmap_init(json);
         });*/
-        console.log("init styles", gmap_styles);
         gmap_init(gmap_styles);
+        filters_init();
+        
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope) {
+            $scope.firstName= "John";
+            $scope.lastName= "Doe";
+        });
         
         
     }
@@ -77,14 +83,19 @@ var rmProgramFinder = (function() {
         //displayMarkers();
     }
     
+    var filters_init = function(){
+        datePicker_init();
+        //other filters bind change
+    }
+    
     
     /*
     *   Initialize DatePicker
     */
     
     var datePicker_init = function(){
-
-        $('#datePicker').datepicker({
+        var dates = [];
+        $('#date-select').datepicker({
             format: 'mm/dd/yyyy',
             autoclose: true,
             todayHighlight: false,

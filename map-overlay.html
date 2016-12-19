@@ -13,12 +13,10 @@
         
     </script>
     
-    
-    
 <title>MMLIS RM Program Finder</title>
 </head>
 <body>
-	<div id="map-container">
+	<div id="map-container" data-ng-app="rm_map" data-ng-controller="map_ctrl">
 		<div id="map-filter-controls">
             <form id="filter-controls" class="col-md-4">
                 
@@ -27,16 +25,16 @@
                     <label>Date</label>
                     <div class="date_group input-group input-append date shadow" id="datePicker">
 
-                        <input id="date-select" type="text" class="form-control" name="date" value="Any" placeholder="Any">
+                        <input id="date-select" type="text" class="form-control" name="date" value="Any" placeholder="Any" data-ng-model="date">
 
-                        <span class="input-group-addon add-on"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i></span>
+                        <span class="input-group-addon add-on"><i class="fa fa-calendar fa-fw glyphicon glyphicon-calendar" aria-hidden="true"></i></span>
                     </div>
                 </div>
 
                 <!--Search Topic Filter-->
                 <div class="col-md-12">
                     <label>Topic</label>
-                    <select id="topic-select" class="form-control shadow" data-live-search="true">
+                    <select id="topic-select" class="form-control shadow" data-live-search="true" data-ng-model="topics">
                         <option>Any</option>
                     </select>
                 </div>
@@ -44,7 +42,7 @@
                 <!--Search Location Filter-->
                  <div class="col-md-12">
                     <label>Location</label>
-                    <select id="location-select" class="form-control shadow" data-live-search="true">
+                    <select id="location-select" class="form-control shadow" data-live-search="true" data-ng-model="locations">
                         <option>Any</option>
                     </select>
                 </div>
@@ -52,7 +50,7 @@
                 <!-- Search Code Filter -->
                 <div class="col-md-12">
                     <label>Code</label>
-                    <select id="code-select" class="form-control shadow" data-live-search="true">
+                    <select id="code-select" class="form-control shadow" data-live-search="true" data-ng-model="program_code">
                         <option>Any</option>
                     </select>
                 </div>
@@ -96,6 +94,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLahhfoVtxfV4AIjS-3v8MXCb-zn2ggH8&callback=google_init">
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.0/js/bootstrap-select.min.js"></script>
