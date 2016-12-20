@@ -1,5 +1,6 @@
-<html>
+<!DOCTYPE html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="css/rm-map.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css">
@@ -71,7 +72,7 @@
                 <div class="result-date col-md-2">
                     <ul>
                         <li>{{parseDate(event.date) | date:"MMM"}}</li>
-                        <li>{{parseDate(event.date) | date:"d"}}<sup>{{parseDate(event.date) | dateSuffix}} </sup><sub>{{parseDate(event.date) | date:"EEE"}}</sub></li>
+                        <li><b>{{parseDate(event.date) | date:"d"}}</b><sup>{{parseDate(event.date) | dateSuffix}} </sup><sub>{{parseDate(event.date) | date:"EEE"}}</sub></li>
                         <li>{{parseDate(event.date) | date:"yyyy"}}</li>
                         <li>March 6th, 2017</li>
                     </ul>
@@ -82,7 +83,7 @@
 					<span>{{eventData.locations[event.location].address}}</span>
 				</div>
 
-				<div class="col-md-2">
+				<div class="col-md-2 result-right">
 					<h4>{{event.code}}</h4>
 					<a href="#" class="rm-ico ico-eye">Program Description</a>
 					<a href="#" class="rm-ico ico-check">Register</a>
