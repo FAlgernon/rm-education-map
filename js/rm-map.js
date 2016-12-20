@@ -22,12 +22,10 @@ var rmProgramFinder = (function() {
         });*/
         gmap_init(gmap_styles);
         filters_init();
+       // eventData = events;
+        //console.log(eventData);
         
-        var app = angular.module('myApp', []);
-        app.controller('myCtrl', function($scope) {
-            $scope.firstName= "John";
-            $scope.lastName= "Doe";
-        });
+        
         
         
     }
@@ -143,8 +141,62 @@ var rmProgramFinder = (function() {
 
     }
     
+    //parses address into street address, state and zip
+    var parseAddress = function(address) {
+        "use strict";
+
+        // Trim the address.
+        address = address.trim();
+
+        // Make an object to contain the data.
+        var returned = {};
+
+        // Find the comma.
+        var comma = address.indexOf(',');
+
+        // Pull out the city.
+        returned.city = address.slice(0, comma);
+
+        // Get everything after the city.
+        var after = address.substring(comma + 2); // The string after the comma, +2 so that we skip the comma and the space.
+
+        // Find the space.
+        var space = after.lastIndexOf(' ');
+
+        // Pull out the state.
+        returned.state = after.slice(0, space);
+
+        // Pull out the zip code.
+        returned.zip = after.substring(space + 1);
+
+        //returned.lat = lat;
+        //returned.lng = lng;
+
+        // Return the data.
+        return returned;
+    }
+    
+    var getUnique = function(data, opt){
+        var uniqueData = [];
+        for(var i = 0; i < data.length; i++) {
+            var m = (opt === undefined) ? data[i] : data[opt];
+            if(!uniqueData.contains(m)) {
+                uniqueData.push(m);
+            }
+        }
+    } 
+    
+    var parseAddresses = function(data){
+        angular.forEach(data, function(value, key) {
+              this.push(parseAddress(this.address));
+            }, data);
+        return data;
+    }
+    
     return {
 		"init": init,
+        "parseAddresses" : parseAddresses,
+        "getUnique" : getUnique
     }
     
 })();
@@ -165,6 +217,8 @@ $(function() {
     //  .fail(function( jqxhr, settings, exception ) {
     //    console.log( "Failed to load calendar data." );
     //  });
+    
+    
     
     rmProgramFinder.init();
     

@@ -58,6 +58,7 @@ $white: #FFFFFF;
     font-size:1.2em;
     margin-top:1em;
     line-height: 1em;
+	text-transform:uppercase;
 }
 .result-date>ul>li:nth-of-type(2){
     font-size:2em;

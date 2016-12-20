@@ -1,15 +1,14 @@
- var events =
-    {
+{
         "topics" : [
-            {id:0, "title": "Legal Issues: Recurring Medical Malpractice Topics - Six Case Examples"},
-            {id:1, "title": "HIPAA Revisited"},
-            {id:2, "title": "Closed Claims Study: Anesthesia"},
-            {id:3, "title": "Primary Care - Risk Management in a Nutshell"},
-            {id:4, "title": "OB/GYN - Risk Management in a Nutshell"},
-            {id:5, "title": "Surgery - Minimizing Risk"},
-            {id:6, "title": "Ophthalmology - Eye Opening Risk Issues"},
-            {id:7, "title": "Emergency Medicine (EMR Issues)"},
-            {id:8, "title": "Pediatrics"}            
+            {"id":0, "title": "Legal Issues: Recurring Medical Malpractice Topics - Six Case Examples"},
+            {"id":1, "title": "HIPAA Revisited"},
+            {"id":2, "title": "Closed Claims Study: Anesthesia"},
+            {"id":3, "title": "Primary Care - Risk Management in a Nutshell"},
+            {"id":4, "title": "OB/GYN - Risk Management in a Nutshell"},
+            {"id":5, "title": "Surgery - Minimizing Risk"},
+            {"id":6, "title": "Ophthalmology - Eye Opening Risk Issues"},
+            {"id":7, "title": "Emergency Medicine (EMR Issues)"},
+            {"id":8, "title": "Pediatrics"}            
         ],
         "locations" : [
             {
@@ -196,415 +195,415 @@
         ],
         "events" : [
             {
-                "id" : 0,
+                "topic" : 0,
                 "date" : "03/06/2017",
                 "code" : "5041",
                 "location" : 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "03/13/2017",
               "code": "5042",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "03/20/2017",
               "code": "5043",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "04/06/2017",
               "code": "5044",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "04/26/2017",
               "code": "5045",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "05/08/2017",
               "code": "5046",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "06/22/2017",
               "code": "5047",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "06/26/2017",
               "code": "5047",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "07/19/2017",
               "code": "5048",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "07/20/2017",
               "code": "5049",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "08/09/2017",
               "code": "5050",
               "location": 0 
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "08/21/2017",
               "code": "5051",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "09/05/2017",
               "code": "5052",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "09/14/2017",
               "code": "5053",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "09/19/2017",
               "code": "5054",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "09/25/2017",
               "code": "5055",
               "location": 0
             },
             {
-              "id": 0,
+              "topic" : 0,
               "date": "09/27/2017",
               "code": "5056",
               "location": 0
             },
             {
-              "id": 1,
+              "topic" : 1,
               "date": "03/07/2017",
               "code": "5057",
               "location": 1
             },
             {
-              "id": 1,
+              "topic" : 1,
               "date": "04/03/2017",
               "code": "5058",
               "location": 1
             },
             {
-              "id": 1,
+              "topic" : 1,
               "date": "04/27/2017",
               "code": "5059",
               "location": 1
             },
             {
-              "id": 1,
+              "topic" : 1,
               "date": "06/05/2017",
               "code": "5060",
               "location": 1 
             },
             {
-              "id": 1,
+              "topic" : 1,
               "date": "06/15/2017",
               "code": "5061",
               "location": 1
             },
             {
-              "id": 1,
+              "topic" : 1,
               "date": "06/21/2017",
               "code": "5062",
               "location": 1
             },
             {
-              "id": 1,
+              "topic" : 1,
               "date": "07/31/2017",
               "code": "5063",
               "location": 1
             },
             {
-              "id": 1,
+              "topic" : 1,
               "date": "08/16/2017",
               "code": "5064",
               "location": 1
             },
             {
-              "id": 1,
+              "topic" : 1,
               "date": "09/06/2017",
               "code": "5065",
               "location": 1
             },
             {
-              "id": 1,
+              "topic" : 1,
               "date": "09/12/2017",
               "code": "5066",      
               "location": 1
             },
             {
-               "id": 1,
+               "topic" : 1,
                "date": "03/21/2017",
                "code": "",
                "location": 1
              },
              {
-               "id": 2,
+               "topic" : 2,
                "date": "04/24/2017",
                "code": "",
                "location": 2
              },
              {
-               "id": 2,
+               "topic" : 2,
                "date": "07/20/2017",
                "code": "",
                "location": 2
              },
              {
-               "id": 2,
+               "topic" : 2,
                "date": "07/27/2017",
                "code": "",
                "location": 2
              },
              {
-               "id": 2,
+               "topic" : 2,
                "date": "08/16/2017",
                "code": "",
                "location": 2
              },
              {
-               "id": 2,
+               "topic" : 2,
                "date": "08/28/2017",
                "code": "",
                "location": 2
              },
              {
-               "id": 2,
+               "topic" : 2,
                "date": "09/13/2017",
                "code": "",
                "location": 2
              },
              {
-               "id": 3,
+               "topic" : 3,
                "date": "03/09/2017",
                "code": "",
                "location": 3
              },
              {
-               "id": 3,
+               "topic" : 3,
                "date": "03/14/2017",
                "code": "",
                "location": 3
              },
              {
-               "id": 3,
+               "topic" : 3,
                "date": "04/04/2017",
                "code": "",
                "location": 3
              },
              {
-               "id": 3,
+               "topic" : 3,
                "date": "05/02/2017",
                "code": "",
                "location": 3
              },
              {
-               "id": 3,
+               "topic" : 3,
                "date": "05/15/2017",
                "code": "",
                "location": 3
              },
              {
-               "id": 3,
+               "topic" : 3,
                "date": "06/26/2017",
                "code": "",
                "location": 3
              },
              {
-               "id": 3,
+               "topic" : 3,
                "date": "08/14/2017",
                "code": "",
                "location": 3
              },
              {
-               "id": 3,
+               "topic" : 3,
                "date": "08/30/2017",
                "code": "",
                "location": 3
              },
              {
-               "id": 3,
+               "topic" : 3,
                "date": "09/18/2017",
                "code": "",
                "location": 3
              },
              {
-               "id": 4,
+               "topic" : 4,
                "date": "04/20/2017",
                "code": "",
                "location": 4
              },
              {
-               "id": 4,
+               "topic" : 4,
                "date": "05/17/2017",
                "code": "",
                "location": 4
              },
              {
-               "id": 4,
+               "topic" : 4,
                "date": "06/19/2017",
                "code": "",
                "location": 4
              },
              {
-               "id": 4,
+               "topic" : 4,
                "date": "08/10/2017",
                "code": "",
                "location": 4
              },
              {
-               "id": 4,
+               "topic" : 4,
                "date": "09/11/2017",
                "code": "",
                "location": 4
              },
              {
-               "id": 5,
+               "topic" : 5,
                "date": "03/30/2017",
                "code": "",
                "location": 5
              },
              {
-               "id": 5,
+               "topic" : 5,
                "date": "04/25/2017",
                "code": "",
                "location": 5
              },
              {
-               "id": 5,
+               "topic" : 5,
                "date": "06/14/2017",
                "code": "",
                "location": 5
              },
              {
-               "id": 5,
+               "topic" : 5,
                "date": "08/17/2017",
                "code": "",
                "location": 5
              },
              {
-               "id": 5,
+               "topic" : 5,
                "date": "09/19/2017",
                "code": "",
                "location": 5
              },
              {
-               "id": 6,
+               "topic" : 6,
                "date": "03/23/2017",
                "code": "",
                "location": 6
              },
              {
-               "id": 6,
+               "topic" : 6,
                "date": "05/10/2017",
                "code": "",
                "location": 6
              },
              {
-               "id": 6,
+               "topic" : 6,
                "date": "06/13/2017",
                "code": "",
                "location": 6
              },
              {
-               "id": 6,
+               "topic" : 6,
                "date": "08/22/2017",
                "code": "",
                "location": 6
              },
              {
-               "id": 6,
+               "topic" : 6,
                "date": "09/28/2017",
                "code": "",
                "location": 6
              },
              {
-               "id": 7,
+               "topic" : 7,
                "date": "03/27/2017",
                "code": "",
                "location": 7
              },
              {
-               "id": 7,
+               "topic" : 7,
                "date": "03/31/2017",
                "code": "",
                "location": 7
              },
              {
-               "id": 7,
+               "topic" : 7,
                "date": "06/07/2017",
                "code": "",
                "location": 7
              },
              {
-               "id": 7,
+               "topic" : 7,
                "date": "08/07/2017",
                "code": "",
                "location": 7
              },
              {
-               "id": 7,
+               "topic" : 7,
                "date": "08/23/2017",
                "code": "",
                "location": 7
              },
               {
-               "id": 8,
+               "topic" : 8,
                "date": "03/08/2017",
                "code": "",
                "location": 8
              },
              {
-               "id": 8,
+               "topic" : 8,
                "date": "05/03/2017",
                "code": "",
                "location": 8
              },
              {
-               "id": 8,
+               "topic" : 8,
                "date": "05/22/2017",
                "code": "",
                "location": 8
              },
              {
-               "id": 8,
+               "topic" : 8,
                "date": "05/30/2017",
                "code": "",
                "location": 8
              },
              {
-               "id": 8,
+               "topic" : 8,
                "date": "08/31/2017",
                "code": "",
                "location": 8
              },
              {
-               "id": 8,
+               "topic" : 8,
                "date": "09/26/2017",
                "code": "",
                "location": 8
