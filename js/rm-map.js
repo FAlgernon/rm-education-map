@@ -2,15 +2,20 @@
 *      Placeholder for google map styles
 *      https://mapstyle.withgoogle.com/
 */
-if (typeof gmap_styles == 'undefined') 
+if (typeof gmap_styles === 'undefined') {
     var gmap_styles = {}; //failed to load map styles
+}
 
 
 /*
 *       RM Program Finder Main
 */
 var rmProgramFinder = (function() {
-    
+	
+	/* GMap references */
+    var map = [];
+	var infoWindow = [];
+	
     /*
     *       RM App Init
     */
@@ -48,10 +53,17 @@ var rmProgramFinder = (function() {
           styles: gmap_styles
        };
 
-        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
         // a new Info Window is created
-        //var infoWindow = new google.maps.InfoWindow();
+        infoWindow = new google.maps.InfoWindow();
+    
+		// Event that closes the InfoWindow with a click on the map
+		google.maps.event.addListener(map, 'click', function() {
+			infoWindow.close();
+		});
+		
+		
 
         //updateInfoWindowStyle();
         //updateMapOnInfoClose();
@@ -85,6 +97,70 @@ var rmProgramFinder = (function() {
         datePicker_init();
         //other filters bind change
     }
+	
+	
+	// This function will iterate over locations array
+	// creating markers with createMarker function
+	function displayMarkers(locations) {
+		//console.log("display markers " , locations);
+		var locationtemp = [];
+		
+		// this variable sets the map bounds and zoom level according to markers position
+		var bounds = new google.maps.LatLngBounds();
+		
+		 // For loop that runs through the info on markersData making it possible to createMarker function to create the marker
+		for(var i = 0; i < locations.length; i++) {
+			var lat = locations[i].coordinates.lat;
+			var lng = locations[i].coordinates.lng;
+			var latlng = new google.maps.LatLng(lat, lng);
+			var name = locations[i].facility;
+			var address = parseAddress(locations[i].address)
+			
+			createMarker(latlng, name, address.city, address.state, address.zip, i);
+			
+			// Marker’s Lat. and Lng. values are added to bounds variable
+			bounds.extend(latlng);
+		}
+		
+		// Finally the bounds variable is used to set the map bounds
+	   // with API’s fitBounds() function
+		//map.fitBounds(bounds);
+	}
+	
+	// This function creates each marker and sets their Info Window content
+	function createMarker(latlng, name, address, state, zip, num) {
+		var marker = new google.maps.Marker({
+			map: map,
+			position: latlng,
+			title: name
+		});
+		
+		// This event expects a click on a marker
+	   // When this event is fired the infowindow content is created
+	   // and the infowindow is opened
+		google.maps.event.addListener(marker, 'click', function() {
+			// Variable to define the HTML content to be inserted in the infowindow
+			//var iwContent = getIWContent(num, 0);
+			
+			map.setZoom(12);
+			
+			// including content to the infowindow
+			//infoWindow.setContent(iwContent);
+			
+			// opening the infowindow in the current map and at the current marker location
+			infoWindow.open(map, marker);
+			
+		});
+		
+		google.maps.event.addListener(marker, 'mouseover', function() {
+			//var iwContent = getIWContent(num, 1);
+			
+			//infoWindow.setContent(iwContent);
+			
+			infoWindow.open(map, marker);
+		})
+		
+	}
     
     
     /*
@@ -196,7 +272,8 @@ var rmProgramFinder = (function() {
     return {
 		"init": init,
         "parseAddresses" : parseAddresses,
-        "getUnique" : getUnique
+        "getUnique" : getUnique,
+		"displayMarkers" : displayMarkers
     }
     
 })();

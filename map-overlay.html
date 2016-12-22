@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="css/rm-map.css">
@@ -25,9 +25,7 @@
                 <div class="col-md-12">
                     <label>Date</label>
                     <div class="date_group input-group input-append date shadow" id="datePicker">
-
-                        <input id="date-select" type="text" class="form-control" name="date" value="Any" placeholder="Any" data-ng-model="date">
-
+                        <input id="date-select" type="text" class="form-control" name="date" value="Any" placeholder="Any" data-ng-model="date"  ng-change="filterDateUpdate()">
                         <span class="input-group-addon add-on"><i class="fa fa-calendar fa-fw glyphicon glyphicon-calendar" aria-hidden="true"></i></span>
                     </div>
                 </div>
@@ -35,7 +33,7 @@
                 <!--Search Topic Filter-->
                 <div class="col-md-12">
                     <label>Topic</label>
-                    <select name="topic_select" id="topic-select" class="form-control shadow" data-live-search="true" ng-model="filterTopic" ng-options="topic.title for topic in eventData.topics">
+                    <select name="topic_select" id="topic-select" class="form-control shadow" data-live-search="true" ng-model="search.topic" ng-options="topic.title for topic in eventData.topics" ng-change="filterTopicUpdate()">
                         <option value="" ng-selected="true">Any</option>
                     </select>
                 </div>
@@ -43,7 +41,7 @@
                 <!--Search Location Filter-->
                  <div class="col-md-12">
                     <label>Location</label>
-                     <select name="location_select" id="location-select" class="form-control shadow" data-live-search="true" ng-model="filterLocation" ng-options="location.facility for location in eventData.locations">
+                     <select name="location_select" id="location-select" class="form-control shadow" data-live-search="true" ng-model="search.location" ng-options="location.facility for location in eventData.locations" ng-change="filterLocationUpdate()">
                         <option value="" ng-selected="true">Any</option>
                     </select>
                     
@@ -52,7 +50,7 @@
                 <!-- Search Code Filter -->
                 <div class="col-md-12">
                     <label>Code</label>
-                    <select name="code_select" id="code-select" class="form-control shadow" data-live-search="true" ng-model="filterCode" ng-options="event.code for event in eventData.events">
+                    <select name="code_select" id="code-select" class="form-control shadow" data-live-search="true" ng-model="search.code" ng-options="event.code for event in eventData.events" ng-change="filterCodeUpdate()">
                         <option value="" ng-selected="true">Any</option>
                     </select>
                 </div>
@@ -67,7 +65,7 @@
             
 		</div>
 
-		<div id="map-results-container" ng-repeat="event in eventData.events">
+		<div id="map-results-container" ng-repeat="event in eventData.events | eventFilter:search:this">
 			<div class="map-results-each col-md-12">
                 <div class="result-date col-md-2">
                     <ul>
@@ -113,30 +111,71 @@
         var resultData = [];
         var app = angular.module('rm_app', []);
         app.controller('map_ctrl', ['$scope', '$http', function($scope, $http) {
-            $scope.eventData = null;			 
+			
+            $scope.eventData = [];			 
 			 
 			$http.get('data/event-data.json').then(successCallback, errorCallback);
 
 			function successCallback(response){
 				$scope.eventData = response.data;
-				console.log($scope.eventData);
+				resultData = response.data;
+				
+				// Finally displayMarkers() function is called to begin the markers creation
+				if($scope.eventData.locations.length > 0) {
+					rmProgramFinder.displayMarkers($scope.eventData.locations); // TODO match data
+				}
+				
 			}
 			function errorCallback(error){
 				console.log(error);
 			}
-			 
+			
+			/* Filters */
+            $scope.filterDate = false;
+			$scope.filterTopic = {id:-1, "title":"Any"};
+            $scope.filterLocation = -1;
+			$scope.filterCode = false;
             
-            //$scope.topics = eventData.topics;
-            //$scope.locations = eventData.locations;
+			$scope.search = {location:null, code:null, date:null, topic:null, $:null};
+			$scope.filter = '$';
+			$scope.changeFilterTo = function(pr) {
+				$scope.filter = pr; 
+			}
+			
+            /* Filter updates */
+			$scope.filterDateUpdate = function(){
+				console.log($scope.filterTopic);
+			}
+			
+			$scope.filterTopicUpdate = function(){
+				
+				filterTopic = $scope.eventData.locations.indexOf($scope.search.topic);
+				console.log($scope.filterTopic);
+			}
+			
+			$scope.filterLocationUpdate = function(){
+				
+				filterLocation = $scope.eventData.locations.indexOf($scope.search.location);
+				
+				console.log("todo - update map on location filter change and visa versa");
+				
+				
+				
+				//update markers on map
+				//re-center map
+				
+			}
+			
+			$scope.filterCodeUpdate = function(){
+				console.log($scope.filterCode);
+			}
+			
+			$scope.applyFilters = function(){
+				
+			}
             
-            
-            $scope.filterTopic = {id:-1, "title":"Any"};
-            $scope.filterLocation = {id:-1, "title":"Any"};
-            
-            //console.log($scope.locations);
-            
-            
-             $scope.getLocation = function(_rel){
+			/* Array matching */
+            $scope.getLocation = function(_rel){
                 return $scope.locations[_rel];
             }
             
@@ -148,23 +187,65 @@
 				return Date.parse(date);
 			}
             
-            
         }]);
 		
-		app.filter('dateSuffix', function($filter) {
-		  var suffixes = ["th", "st", "nd", "rd"];
-		  return function(input) {
+	app.filter('dateSuffix', function($filter) {
+		var suffixes = ["th", "st", "nd", "rd"];
+		return function(input) {
 			var dtfilter = $filter('date')(input, 'dd');
 			var day = parseInt(dtfilter.slice(-2));
 			var relevantDigits = (day < 30) ? day % 20 : day % 30;
 			var suffix = (relevantDigits <= 3) ? suffixes[relevantDigits] : suffixes[0];
 			return suffix;
-		  };
+		};
+	});
+	
+	//Events Filter Options
+	app.filter('eventFilter', function() {
+		
+		return function (events, searchFilter, $scope){
+			
+			var filtered = [];
+			console.log("search filter" , searchFilter);
+			if(events.length > 0){
+				for (var i = 0; i < events.length; i++) {
+					var event = events[i];
+					var matched = false;
+					//Filter by location
+					
+					if(searchFilter.location === null ||  event.location === $scope.eventData.locations.indexOf(searchFilter.location)){
+						if (searchFilter.topic === null || event.topic === $scope.eventData.topics.indexOf(searchFilter.topic)){
+							if (searchFilter.date === null || event.date == searchFilter.date){
+								if (searchFilter.code === null || event.code == searchFilter.code.code){
+									matched = true;	
+								}
+							}
+						}
+					}
+					
+					if(matched){
+						filtered.push(event);
+					}
+							
+				}
+			}
+
+				
+			return filtered;
+		}
+	});
+	app.filter('topic', function($filter) {
+		console.log("topic", $filter, $scope.topics.indexOf($filter));
+		return $filter;	
+	});
+	app.filter('code', function($filter) {
+		console.log("code", $filter, $scope.events.indexOf($filter));
+		return $filter;	
 	});
 
-    
-    </script>
+//filter search example http://jsfiddle.net/lopisan/vzQKk/1/
 
-    
+</script>
+  
 </body>
 </html>
