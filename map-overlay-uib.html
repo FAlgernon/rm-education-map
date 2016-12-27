@@ -2,8 +2,7 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="css/rm-map.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <script>
         function google_init(){
             
@@ -25,8 +24,10 @@
                 <div class="col-md-12">
                     <label>Date</label>
                     <div class="date_group input-group input-append date shadow" id="datePicker">
-                        <input id="date-select" type="text" class="form-control" name="date" value="Any" placeholder="Any" ng-model="search.date"  ng-change="filterDateUpdate()">
-                        <span class="input-group-addon add-on"><i class="fa fa-calendar fa-fw glyphicon glyphicon-calendar" aria-hidden="true"></i></span>
+                        <input id="date-select" type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="search.date" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" name="date" value="Any" placeholder="Any" ng-change="filterDateUpdate()" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
                     </div>
                 </div>
 
@@ -96,18 +97,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>-->
     <script src="js/angular.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.0/js/bootstrap-select.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
-
-    <!--<script src="data/event-data.json"></script>-->
+    <script src="js/ui-bootstrap-tpls-2.3.2.min.js"></script>
     <script src="data/gmap-styles.js"></script>
-    <script src="js/rm-map.js?nocache"></script>
+    <script src="js/rm-map-reduce.js?nocache"></script>
     
     <script>
 
-        var app = angular.module('rm_app', []);
+        var app = angular.module('rm_app', ['ui.bootstrap']);
         app.controller('map_ctrl', ['$scope', '$http', '$filter', function($scope, $http, $filter) {
 			
             $scope.eventData = [];
@@ -164,9 +160,9 @@
 			}
 			
             /* Filter updates */
-			$scope.filterDateUpdate = function(evt){
-				//$scope.filterTopic.date
-				console.log("date update", evt);
+			$scope.filterDateUpdate = function(){
+				
+				console.log("date update", $scope.search.date);
 				
 			}
 			
@@ -205,8 +201,126 @@
 				rmProgramFinder.updateMap($scope.matchingLocations(newData));
 			});
 			
+			//Watch output/display data change
+			$scope.$watchCollection('search', function(newData, oldData) {
+				console.log("search watch", $scope.search);
+			});
+			
+			////////////////////
+			
+			$scope.today = function() {
+				//$scope.dt = new Date();
+			};
+  $scope.today();
+
+  $scope.clear = function() {
+    $scope.search.date = null;
+  };
+
+  $scope.inlineOptions = {
+    customClass: getDayClass,
+    minDate: new Date(),
+    showWeeks: true
+  };
+
+  $scope.dateOptions = {
+    dateDisabled: disabled,
+    formatYear: 'yy',
+    maxDate: new Date(2017, 12, 31),
+    minDate: new Date(),
+    startingDay: 1
+  };
+  
+
+
+  // Disable dates not in events data
+  function disabled(data) {
+	var cDate = $filter('date')(data.date, 'MM/dd/yyyy');
+	var check = $scope.checkDateInEvents(cDate);
+	return !check;
+  }
+  
+	$scope.checkDateInEvents = function($date){
+	 for(var i = 0; i < $scope.eventData.events.length; i++){
+		if($scope.eventData.events[i].date == $date){
+			return true;
+			break;
+		}
+	 }
+	 return false;
+	}
+	
+/*
+  $scope.toggleMin = function() {
+    $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
+    $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
+  };
+
+  $scope.toggleMin();*/
+	$scope.popup1 = {
+    opened: false
+  };
+  $scope.open1 = function($event) {
+	  //$event.preventDefault();
+    //$event.stopPropagation();
+    $scope.popup1.opened = true;
+	console.log("popup click");
+  };
+
+  $scope.open2 = function() {
+    $scope.popup2.opened = true;
+  };
+
+  $scope.setDate = function(year, month, day) {
+    $scope.dt = new Date(year, month, day);
+  };
+
+  $scope.formats = ['MM/dd/yyyy'];//, 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+  $scope.format = $scope.formats[0];
+  $scope.altInputFormats = ['M!/d!/yyyy'];
+
+ /* 
+
+  $scope.popup2 = {
+    opened: false
+  };
+
+  var tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  var afterTomorrow = new Date();
+  afterTomorrow.setDate(tomorrow.getDate() + 1);
+  $scope.events = [
+    {
+      date: tomorrow,
+      status: 'full'
+    },
+    {
+      date: afterTomorrow,
+      status: 'partially'
+    }
+  ];
+*/
+  function getDayClass(data) {
+    var date = data.date,
+      mode = data.mode;
+    if (mode === 'day') {
+      var dayToCheck = new Date(date).setHours(0,0,0,0);
+
+      for (var i = 0; i < $scope.events.length; i++) {
+        var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+
+        if (dayToCheck === currentDay) {
+          return $scope.events[i].status;
+        }
+      }
+    }
+
+    return '';
+  }
+		
+		
             
-        }]);
+}]);
 		
 	app.filter('dateSuffix', function($filter) {
 		var suffixes = ["th", "st", "nd", "rd"];
@@ -234,7 +348,7 @@
 					
 					if(searchFilter.location === null ||  event.location === $scope.eventData.locations.indexOf(searchFilter.location)){
 						if (searchFilter.topic === null || event.topic === $scope.eventData.topics.indexOf(searchFilter.topic)){
-							if (searchFilter.date === null || event.date == searchFilter.date){
+							if ((searchFilter.date === null || typeof searchFilter.date == 'undefined') || new Date(event.date).getTime() == new Date(searchFilter.date).getTime()){
 								if (searchFilter.code === null || event.code == searchFilter.code.code){
 									matched = true;	
 								}
@@ -269,8 +383,6 @@
 	}]);
 
 //filter search example http://jsfiddle.net/lopisan/vzQKk/1/
-
-
 
 
 </script>
