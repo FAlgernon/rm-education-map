@@ -119,6 +119,10 @@ div.map-results-each > div.result-date {
 	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABZ0RVh0Q3JlYXRpb24gVGltZQAxMi8yMC8xNs9QMcMAAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzbovLKMAAABJklEQVQ4jaXTsUoEMRAG4G/P48BCrGwFQQgIB3ZibWlrLSx2+wT6BPoEa7mFKL6BhQiKB4KVcCBsJQiCKIg2ijZncVkIKOeCAyFMZv5//skk2Wg08h/LUicU+RI2MI9lLMTQHW5wj4O6rO5+EIQin8MTrnGEWwxjuB/XFhYxU5fVF3QTAX081GW18ovSR5yGIt/HK0JD3kmSlnA1qd+6rD5iK8vNWScU+WeiYDCJINpVzBWK/L2DXkIwUUFC0CiY7mIYiryZ5U0LggGOI2aYhSJfxyFmW4BTe8Nm11j6LFYwjfM/gGtxP8NqOsYeplpU7qVOSnDZAgwnqdMxvriXluDUXnCRQSjybexCXVbZJFQysb26rHaal/gW9+cWlZucR8j++52/AZvqS1KFXruIAAAAAElFTkSuQmCC);
 	}
 	
-button.uib-datepicker-current {
-	display:none;
+table .btn {
+    border: 0px solid transparent;
+}
+
+.uib-day > button:not(:disabled) {
+	background:#E9F0EF;
 }
