@@ -208,10 +208,10 @@
 			
 			////////////////////
 			
-			$scope.today = function() {
+			//$scope.today = function() {
 				//$scope.dt = new Date();
-			};
-  $scope.today();
+			//};
+  //$scope.today();
 
   $scope.clear = function() {
     $scope.search.date = null;
@@ -219,8 +219,7 @@
 
   $scope.inlineOptions = {
     customClass: getDayClass,
-    minDate: new Date(),
-    showWeeks: true
+    minDate: new Date()
   };
 
   $scope.dateOptions = {
@@ -228,7 +227,8 @@
     formatYear: 'yy',
     maxDate: new Date(2017, 12, 31),
     minDate: new Date(),
-    startingDay: 1
+    startingDay: 1,
+	showWeeks: false
   };
   
 
@@ -237,7 +237,7 @@
   function disabled(data) {
 	var cDate = $filter('date')(data.date, 'MM/dd/yyyy');
 	var check = $scope.checkDateInEvents(cDate);
-	return !check;
+	return data.mode == 'day' && !check;
   }
   
 	$scope.checkDateInEvents = function($date){
@@ -386,6 +386,8 @@
 
 
 </script>
-  
+
+
+ 
 </body>
 </html>
