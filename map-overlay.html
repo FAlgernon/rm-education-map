@@ -41,7 +41,7 @@
                 <!--Search Location Filter-->
                  <div class="col-md-12">
                     <label>Location</label>
-                     <select name="location_select" id="location-select" class="form-control shadow" data-live-search="true" ng-model="search.location" ng-options="location.facility for location in eventData.locations" ng-change="filterLocationUpdate()">
+                     <select name="location_select" id="location-select" class="form-control shadow" data-live-search="true" ng-model="search.location" ng-options="location.city for location in eventData.locations" ng-change="filterLocationUpdate()">
                         <option value="" ng-selected="true">Any</option>
                     </select>
                     
@@ -103,29 +103,50 @@
 
     <!--<script src="data/event-data.json"></script>-->
     <script src="data/gmap-styles.js"></script>
-    <script src="js/rm-map.js"></script>
+    <script src="js/rm-map.js?nocache"></script>
     
     <script>
     
         //var eventData = events;
-        var resultData = [];
+        //var resultData = [];
         var app = angular.module('rm_app', []);
         app.controller('map_ctrl', ['$scope', '$http', function($scope, $http) {
 			
-            $scope.eventData = [];			 
+            $scope.eventData = [];
+            $scope.uniqueLocations = [];	 
 			 
 			$http.get('data/event-data.json').then(successCallback, errorCallback);
 
 			function successCallback(response){
+				
 				$scope.eventData = response.data;
-				resultData = response.data;
+				console.log("locations retrieved", $scope.eventData.locations.length);
+				//$scope.uniqueLocations.push(rmProgramFinder.parseAddresses($scope.eventData.locations));
+				
 				
 				// Finally displayMarkers() function is called to begin the markers creation
-				if($scope.eventData.locations.length > 0) {
+				if($scope.eventData.locations != null) {
 					rmProgramFinder.displayMarkers($scope.eventData.locations); // TODO match data
+
+					var tmpData = [];
+			        for(var i=0; i < $scope.eventData.locations.length;i++){
+			            var city = $scope.getCity($scope.eventData.locations[i].address);
+			            $scope.eventData.locations[i].city = city;
+			            if(tmpData.indexOf(city)==-1){
+			            	console.log("unique city", city);
+				            tmpData.push(city);
+				        }
+			        }
+			        console.log("unique locations" , tmpData.length);
+			        $scope.uniqueLocations = tmpData;
+			        
+					
+					
 				}
-				
-			}
+
+			};
+
+
 			function errorCallback(error){
 				console.log(error);
 			}
@@ -140,6 +161,13 @@
 			$scope.filter = '$';
 			$scope.changeFilterTo = function(pr) {
 				$scope.filter = pr; 
+			}
+
+			$scope.getCity = function(address){
+		        address = address.trim();// Trim the address.
+		        var comma = address.indexOf(',');// Find the comma.
+		        //return address.slice(1, comma);// Pull out the city.
+		        return address.split(",")[1];
 			}
 			
             /* Filter updates */
@@ -206,8 +234,8 @@
 		return function (events, searchFilter, $scope){
 			
 			var filtered = [];
-			console.log("search filter" , searchFilter);
-			if(events.length > 0){
+			//console.log("search filter" , searchFilter);
+			if(events!=null && events.length > 0){
 				for (var i = 0; i < events.length; i++) {
 					var event = events[i];
 					var matched = false;
@@ -242,6 +270,9 @@
 		console.log("code", $filter, $scope.events.indexOf($filter));
 		return $filter;	
 	});
+	app.config(['$qProvider', function ($qProvider) {
+    $qProvider.errorOnUnhandledRejections(false);
+	}]);
 
 //filter search example http://jsfiddle.net/lopisan/vzQKk/1/
 

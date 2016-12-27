@@ -263,10 +263,13 @@ var rmProgramFinder = (function() {
     } 
     
     var parseAddresses = function(data){
-        angular.forEach(data, function(value, key) {
-              this.push(parseAddress(this.address));
-            }, data);
-        return data;
+        var tmpData = [];
+        for(var i=0; i<data.length;i++){
+            var parsed = parseAddress(data[i].address);
+            if(!tmpData.contains(parsed.city))
+            tmpData.push(parsed.city);
+        }
+        return tmpData;
     }
     
     return {
