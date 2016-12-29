@@ -16,7 +16,16 @@
 <title>MMLIS RM Program Finder</title>
 </head>
 <body>
-	<div id="map-container" data-ng-app="rm_app" data-ng-controller="map_ctrl">
+	<div id="map-container" class="modal-container" data-ng-app="rm_app" data-ng-controller="map_ctrl as $ctrl">
+
+<div id="programModal" class="{{modalToggle}}">
+	
+    <div ng-bind-html="programDescriptionHTML" ng-model="modalOpenClose" class="modal-vis"></div>
+    
+    <div id="modalOverlay" ng-click="modalClose()"></div>
+    
+</div>
+
 		<div id="map-filter-controls">
             <form id="filter-controls" class="col-md-4">
                 
@@ -97,18 +106,22 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>-->
     <script src="js/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
     <script src="js/ui-bootstrap-tpls-2.3.2.min.js"></script>
     <script src="data/gmap-styles.js"></script>
     <script src="js/rm-map-reduce.js?nocache"></script>
     
     <script>
 
-        var app = angular.module('rm_app', ['ui.bootstrap']);
-        app.controller('map_ctrl', ['$scope', '$http', '$filter', function($scope, $http, $filter) {
+        var app = angular.module('rm_app', ['ui.bootstrap', 'ngSanitize']);
+        app.controller('map_ctrl', ['$scope', '$http', '$filter', '$uibModal', '$sce', function($scope, $http, $filter, $uibModal, $sce, $modalRes) {
 			
             $scope.eventData = [];
             $scope.uniqueLocations = [];
 			$scope.filteredData = [];
+			$scope.programDescriptionHTML = "loading...";
+			$scope.modalToggle = "modal-hide";
+			$scope.modalStates = {visible:"modal-show", hidden:"modal-hide"};
 			 
 			$http.get('data/event-data.json').then(successCallback, errorCallback);
 
@@ -152,6 +165,10 @@
 				$scope.filter = pr; 
 			}
 
+			$scope.getModalHtml = function(){
+				return $sce.trustAsHtml($ctrl.programDescriptionHTML);
+			};
+
 			$scope.getCity = function(address){
 		        address = address.trim();// Trim the address.
 		        var comma = address.indexOf(',');// Find the comma.
@@ -174,12 +191,43 @@
 			
 			// Open modal for program description links
 			$scope.programDescription = function(loc){
-				console.log(loc);
+				$("#programModal").css('height', document.height);
+				
+				$http.get('build.php?r='+$scope.eventData.topics[loc].descriptionURL).then(function(response){
+					
+					$scope.programDescriptionHTML = response.data;
+					$scope.modalToggle = $scope.modalStates.visible;
+					console.log(response);
+						
+				});
+				
+				
+				
 			};
 			
+			loadProgramHtml = function(url){
+				$http.get('?r='+url).then(function(response){
+					//sanitized = $sce.trustAsHtml(response.data);
+					$scope.programDescriptionHTML = response.data;
+					return $scope.programDescriptionHTML;
+					
+				}, errorCallback);
+			};
+			
+			$scope.modalClose = function(){
+				console.log("modal close");
+				$scope.modalToggle = $scope.modalStates.hidden;
+			}
+			
+			$scope.getModalHTML = function(){
+				console.log("get modal html", $scope.programDescriptionHTML);
+				return "test" + $scope.programDescriptionHTML;
+			};
+			
+			
+			//get locations to matched events
 			$scope.matchingLocations = function(eventsData){
 				var tmpMatched = [];
-				console.log("data?", eventsData);
 				for(var i = 0; i < eventsData.length; i++){
 					if(tmpMatched.indexOf($scope.eventData.locations[eventsData[i].location])==-1){
 						tmpMatched.push($scope.eventData.locations[eventsData[i].location]);
@@ -199,118 +247,148 @@
 				console.log("search watch", $scope.search);
 			});
 			
-			////////////////////
-			
-			//$scope.today = function() {
-				//$scope.dt = new Date();
-			//};
-  //$scope.today();
+		//Datepicker clear button
+		  $scope.clear = function() {
+			$scope.search.date = null;
+		  };
+		
+		  $scope.inlineOptions = {};
+		
+		  $scope.dateOptions = {
+			dateDisabled: disabled,
+			formatYear: 'yy',
+			startingDay: 0,
+			showWeeks: false
+		  };
 
-  $scope.clear = function() {
-    $scope.search.date = null;
-  };
-
-  $scope.inlineOptions = {};
-
-  $scope.dateOptions = {
-    dateDisabled: disabled,
-    formatYear: 'yy',
-    startingDay: 0,
-	showWeeks: false
-  };
-  
-
-
-  // Disable dates not in events data
-  function disabled(data) {
-	var cDate = $filter('date')(data.date, 'MM/dd/yyyy');
-	var check = $scope.checkDateInEvents(cDate);
-	return data.mode == 'day' && !check;
-  }
-  
-	$scope.checkDateInEvents = function($date){
-	 for(var i = 0; i < $scope.eventData.events.length; i++){
-		if($scope.eventData.events[i].date == $date){
-			return true;
-			break;
-		}
-	 }
-	 return false;
-	}
-	
-/*
-  $scope.toggleMin = function() {
-    $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
-    $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
-  };
-
-  $scope.toggleMin();*/
-  $scope.popup1 = {
-    opened: false
-  };
-  $scope.open1 = function($event) {
-    $scope.popup1.opened = true;
-  };
-
-  $scope.setDate = function(year, month, day) {
-    $scope.dt = new Date(year, month, day);
-  };
-
-  $scope.formats = ['MM/dd/yyyy'];//, 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-  $scope.format = $scope.formats[0];
-  $scope.altInputFormats = ['M!/d!/yyyy'];
+		  // Disable dates not in events data
+		  function disabled(data) {
+			var cDate = $filter('date')(data.date, 'MM/dd/yyyy');
+			var check = $scope.checkDateInEvents(cDate);
+			return data.mode == 'day' && !check;
+		  }
+		  
+			$scope.checkDateInEvents = function($date){
+			 for(var i = 0; i < $scope.eventData.events.length; i++){
+				if($scope.eventData.events[i].date == $date){
+					return true;
+					break;
+				}
+			 }
+			 return false;
+			}
+		
+		  $scope.popup1 = {
+			opened: false
+		  };
+		  $scope.open1 = function($event) {
+			$scope.popup1.opened = true;
+		  };
+		
+		  $scope.setDate = function(year, month, day) {
+			$scope.dt = new Date(year, month, day);
+		  };
+		
+		  $scope.formats = ['MM/dd/yyyy'];//, 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+		  $scope.format = $scope.formats[0];
+		  $scope.altInputFormats = ['M!/d!/yyyy'];
   
   
-	$scope.modalOpen = function () {
+/*	$scope.modalOpen = function () {
 		$scope.showModal = true;
 	};
 
 	$scope.modalClose = function () {
 		$scope.showModal = false;
-	};
+	};*/
+		
+//========================================== MODAL
+		
+var $ctrl = this;
+  $ctrl.items = ['item1', 'item2', 'item3'];
 
- /* 
+  $ctrl.animationsEnabled = true;
 
-  $scope.popup2 = {
-    opened: false
-  };
-
-  var tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  var afterTomorrow = new Date();
-  afterTomorrow.setDate(tomorrow.getDate() + 1);
-  $scope.events = [
-    {
-      date: tomorrow,
-      status: 'full'
-    },
-    {
-      date: afterTomorrow,
-      status: 'partially'
-    }
-  ];
-*/
-  function getDayClass(data) {
-/*    var date = data.date,
-      mode = data.mode;
-    if (mode === 'day') {
-      var dayToCheck = new Date(date).setHours(0,0,0,0);
-
-      for (var i = 0; i < $scope.events.length; i++) {
-        var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
-
-        if (dayToCheck === currentDay) {
-          return $scope.events[i].status;
+  $ctrl.open = function (size, programDescriptionHTML) {
+	  //console.log('ctrl open');
+	  //console.log('parentelem',$('map-container'));
+    var parentElem = angular.element( document.querySelector( '#map-container' ) );
+		//parentSelector ? angular.element($document[0].querySelector('.modal-container ' + parentSelector)) : undefined;
+		
+    var modalInstance = $uibModal.open({
+      animation: $ctrl.animationsEnabled,
+      ariaLabelledBy: 'modal-title',
+      ariaDescribedBy: 'modal-body',
+      templateUrl: 'programDescription.html',
+	  /*templateUrl: url,*/
+      controller: 'map_ctrl',
+     /* controllerAs: '$ctrl',*/
+      size: size,
+      appendTo: parentElem,
+      resolve: {
+        modalRes: function () {
+			console.log("resolve",programDescriptionHTML);
+          return programDescriptionHTML;
         }
       }
-    }*/
+    });
 
-    return '';
-  }
-		
-		
-            
-}]);
+    modalInstance.result.then(function (selectedItem) {
+      //$ctrl.selected = selectedItem;
+	  console.log("modalinstance result");
+    }, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+  };
+
+  $ctrl.openComponentModal = function () {
+    var modalInstance = $uibModal.open({
+      animation: $ctrl.animationsEnabled,
+      component: 'modalComponent',
+      resolve: {
+        items: function () {
+          return $ctrl.items;
+        }
+      }
+    });
+
+	$ctrl.tst = "testing";
+
+    modalInstance.result.then(function (selectedItem) {
+      //$ctrl.selected = selectedItem;
+    }, function () {
+      $log.info('modal-component dismissed at: ' + new Date());
+    });
+  };
+
+
+  $ctrl.toggleAnimation = function () {
+    $ctrl.animationsEnabled = !$ctrl.animationsEnabled;
+  };
+  
+  
+}]);//controller
+
+// Please note that $uibModalInstance represents a modal window (instance) dependency.
+// It is not the same as the $uibModal service used above.
+
+/*app.controller('ModalInstanceCtrl', function ($uibModalInstance, items) {
+  var $ctrl = this;
+  $ctrl.items = items;
+  $ctrl.selected = {
+    item: $ctrl.items[0]
+  };
+  
+
+  $ctrl.ok = function () {
+    $uibModalInstance.close($ctrl.selected.item);
+  };
+
+  $ctrl.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+		        
+});*/
 		
 	app.filter('dateSuffix', function($filter) {
 		var suffixes = ["th", "st", "nd", "rd"];
@@ -374,7 +452,60 @@
 
 //filter search example http://jsfiddle.net/lopisan/vzQKk/1/
 
+/*angular.module('program.description').controller('ModalDemoCtrl', function ($uibModal, $log, $document) {
 
+});*/
+
+
+// Please note that $uibModalInstance represents a modal window (instance) dependency.
+// It is not the same as the $uibModal service used above.
+
+app.controller('ModalInstanceCtrl', function ($uibModalInstance, items) {
+	console.log("modalinstance");
+  var $ctrl = this;
+  $ctrl.items = items;
+  $ctrl.selected = {
+    item: $ctrl.items[0]
+  };
+  
+  $ctrl.ok = function () {
+    $uibModalInstance.close($ctrl.selected.item);
+  };
+
+  $ctrl.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+});
+
+
+// Please note that the close and dismiss bindings are from $uibModalInstance.
+
+app.component('modalComponent', {
+  templateUrl: 'programDescription.html',
+  bindings: {
+    resolve: '<',
+    close: '&',
+    dismiss: '&'
+  },
+  controller: function () {
+    var $ctrl = this;
+
+    $ctrl.$onInit = function () {
+      $ctrl.items = $ctrl.resolve.items;
+      $ctrl.selected = {
+        item: $ctrl.items[0]
+      };
+    };
+
+    $ctrl.ok = function () {
+      $ctrl.close({$value: $ctrl.selected.item});
+    };
+
+    $ctrl.cancel = function () {
+      $ctrl.dismiss({$value: 'cancel'});
+    };
+  }
+});
 
 </script>
 

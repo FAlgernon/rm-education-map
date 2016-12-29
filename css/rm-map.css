@@ -22,6 +22,7 @@ $white: #FFFFFF;
 #map-container {
     max-width:1200px;
     margin : 3em auto;
+	width:920px;
 }
 
 #map-container a {
@@ -41,15 +42,23 @@ $white: #FFFFFF;
 	text-decoration:underline;	
 }
 
-.result-right {
+div.result-right {
 	line-height:2em;
 	padding-top:1em;
+	padding-right:0;
+	padding-left:0;
+	
+}
+
+div.result-right a {
+font-size:.9em;	
 }
 
 div.map-results-each > div.result-date {
     text-align: left;
     margin-top:1em;
 	padding-left:0;
+	padding-right:0;
 }
 
 .result-date>ul {
@@ -125,4 +134,57 @@ table .btn {
 
 .uib-day > button:not(:disabled) {
 	background:#E9F0EF;
+}
+
+
+.uib-day > button:not(:disabled):hover {
+	background:#F1EEDA;
+}
+
+.uib-day > button:not(:disabled)>span {
+	color:#000;
+}
+
+
+button.btn-custom {
+	background-color:#EEE;
+}
+button.btn-custom>.ico {
+	opacity:.5;
+}
+
+#programModal {
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;	
+	display:none;
+	z-index:1100;
+}
+
+.modal-vis {
+	background-image:linear-gradient(162deg,rgb(223,234,233) 0%,rgb(255,255,255) 95%,rgb(255,255,255) 100%);
+	width:542px;
+	height:648px;
+	box-shadow:0px 0px 4px rgba(0,0,0,0.65);
+	margin:auto auto;
+	overflow-y:scroll;
+	z-index:1200;
+    position: fixed;
+	left:25%;
+}
+
+#modalOverlay {
+	background:#fff;
+	opacity:.5;	
+	display:block;
+	width:100%;
+	height:100%;
+}
+
+#programModal.modal-show {
+	display:block;
+	position:fixed;
+	z-index:1200;
 }

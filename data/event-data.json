@@ -1,14 +1,23 @@
 {
         "topics" : [
-            {"id":0, "title": "Legal Issues: Recurring Medical Malpractice Topics - Six Case Examples"},
-            {"id":1, "title": "HIPAA Revisited"},
-            {"id":2, "title": "Closed Claims Study: Anesthesia"},
-            {"id":3, "title": "Primary Care - Risk Management in a Nutshell"},
-            {"id":4, "title": "OB/GYN - Risk Management in a Nutshell"},
-            {"id":5, "title": "Surgery - Minimizing Risk"},
-            {"id":6, "title": "Ophthalmology - Eye Opening Risk Issues"},
-            {"id":7, "title": "Emergency Medicine (EMR Issues)"},
-            {"id":8, "title": "Pediatrics"}            
+            {"id":0, "title": "Legal Issues: Recurring Medical Malpractice Topics - Six Case Examples",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_legal.shtml"},
+            {"id":1, "title": "HIPAA Revisited",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_pathology.shtml"},
+            {"id":2, "title": "Closed Claims Study: Anesthesia",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_extenders.shtml"},
+            {"id":3, "title": "Primary Care - Risk Management in a Nutshell",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_telemedicine.shtml"},
+            {"id":4, "title": "OB/GYN - Risk Management in a Nutshell",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_electronic.shtml"},
+            {"id":5, "title": "Surgery - Minimizing Risk",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_legal.shtml"},
+            {"id":6, "title": "Ophthalmology - Eye Opening Risk Issues",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_legal.shtml"},
+            {"id":7, "title": "Emergency Medicine (EMR Issues)",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_legal.shtml"},
+            {"id":8, "title": "Pediatrics",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_legal.shtml"}           
         ],
         "locations" : [
             {
