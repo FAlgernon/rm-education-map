@@ -20,7 +20,15 @@
 
 <div id="programModal" class="{{modalToggle}}">
 	
-    <div ng-bind-html="programDescriptionHTML" ng-model="modalOpenClose" class="modal-vis"></div>
+    <div class="modal-vis">
+    <div class="row">
+    	<div class="col-sm-12">Program Description <a href="" ng-click="modalClose()" class="rm-ico ico-x close-x pull-right"><i>x</i></a></div>
+        
+    </div>
+        <div ng-bind-html="programDescriptionHTML" ng-model="modalOpenClose" class="modal-content-container">
+        
+        </div>
+    </div>
     
     <div id="modalOverlay" ng-click="modalClose()"></div>
     

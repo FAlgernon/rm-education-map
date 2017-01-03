@@ -128,6 +128,13 @@ div.map-results-each > div.result-date {
 	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABZ0RVh0Q3JlYXRpb24gVGltZQAxMi8yMC8xNs9QMcMAAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzbovLKMAAABJklEQVQ4jaXTsUoEMRAG4G/P48BCrGwFQQgIB3ZibWlrLSx2+wT6BPoEa7mFKL6BhQiKB4KVcCBsJQiCKIg2ijZncVkIKOeCAyFMZv5//skk2Wg08h/LUicU+RI2MI9lLMTQHW5wj4O6rO5+EIQin8MTrnGEWwxjuB/XFhYxU5fVF3QTAX081GW18ovSR5yGIt/HK0JD3kmSlnA1qd+6rD5iK8vNWScU+WeiYDCJINpVzBWK/L2DXkIwUUFC0CiY7mIYiryZ5U0LggGOI2aYhSJfxyFmW4BTe8Nm11j6LFYwjfM/gGtxP8NqOsYeplpU7qVOSnDZAgwnqdMxvriXluDUXnCRQSjybexCXVbZJFQysb26rHaal/gW9+cWlZucR8j++52/AZvqS1KFXruIAAAAAElFTkSuQmCC);
 	}
 	
+.ico-x {
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAK6wAACusBgosNWgAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAAWdEVYdENyZWF0aW9uIFRpbWUAMTIvMjAvMTbPUDHDAAABAklEQVQ4jaWTS4rCQBRFT7QnglupBRQEpBw0BBwFXIrgWHA1DUKDIDgwBAJZQLYi1LAc+J7GSqW7sS8EUp9zePXLQgj8Jx/9RtW1C2ADrJ2xPhqbAQdg74xttD/TCgQ+ATPgAqxUIvAZyAEPfKokCyFQde0SOAqsuQAr+VdY44HCGVvrEjYRDLCUiqYRjMzdAvVEOkqgZphFAkbmlgATAFlrMSJJwYXuj1bwV8kL/CLoZfqDYDD2EFRdO2e423Fy4CzH+hQIfPoFTkq0gsMIXANNoj8HvvuCHffLEcOFfLHEC/M4xkYm+j7sjPXO2GskGV5ljbyHLVAmHtMc+GLsMb2bG2PgZ7tmCqipAAAAAElFTkSuQmCC);
+}
+
+.close-x>i {visibility:hidden;}
+.close-x {height:16px;}
+	
 table .btn {
     border: 0px solid transparent;
 }
@@ -165,14 +172,34 @@ button.btn-custom>.ico {
 
 .modal-vis {
 	background-image:linear-gradient(162deg,rgb(223,234,233) 0%,rgb(255,255,255) 95%,rgb(255,255,255) 100%);
-	width:542px;
-	height:648px;
+	width:540px;
+	height:80%;
 	box-shadow:0px 0px 4px rgba(0,0,0,0.65);
 	margin:auto auto;
-	overflow-y:scroll;
 	z-index:1200;
     position: fixed;
-	left:25%;
+	left:50%;
+	top:50%;
+  transform: translate(-50%, -50%);
+  transform: -webkit-translate(-50%, -50%);
+  transform: -ms-translate(-50%, -50%);
+  font-size:.9em;
+  line-height:145%;
+   padding: .3em;
+}
+
+.modal-content-container {
+    height: calc(100% - 2.5em);
+    overflow-y: scroll;
+    padding: 1.5em;	
+}
+
+.modal-vis>div:nth-of-type(1){
+	line-height:100%;
+	font-weight:bold;
+	padding:.5em;
+	color:rgb(53,97,90);
+	text-align:center;
 }
 
 #modalOverlay {
@@ -187,4 +214,16 @@ button.btn-custom>.ico {
 	display:block;
 	position:fixed;
 	z-index:1200;
+}
+
+.modal-vis h1 {
+	font-size:1.5em;
+	line-height:120%;
+	color:rgb(38,106,96);
+}
+.modal-vis h2 {
+	font-size:1em;
+	color:#0C3F36;
+	font-weight:bold;
+	line-height:100%;
 }

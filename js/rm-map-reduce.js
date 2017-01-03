@@ -26,7 +26,6 @@ var rmProgramFinder = (function() {
     
     var init = function(){
         gmap_init(gmap_styles);
-        //filters_init();
     }
 
     /*
@@ -62,35 +61,14 @@ var rmProgramFinder = (function() {
         //updateInfoWindowStyle();
         //updateMapOnInfoClose();
 
-        //construct display_json from json
-        //json_reset();
-
-        //loadArrays();
-
-        //init date picker
-        //initDatePick();
-
         //draw to events display
         //draw(display_json);
-
-        //sort arrays
-        //topic.sort();
-        //city.sort();
-        //codes.sort();
-
-        //populate filter selects
-        //init_select($("#topic-select"), topic);
-        //init_select($("#location-select"), city);
-        //init_select($("#code-select"), codes);
-
-        // Finally displayMarkers() function is called to begin the markers creation
-        //displayMarkers();
     }
     
-    var filters_init = function(){
+   /* var filters_init = function(){
         datePicker_init();
         //other filters bind change
-    }
+    }*/
 	
 	
 	// This function will iterate over locations array
@@ -108,7 +86,7 @@ var rmProgramFinder = (function() {
 			var lng = locations[i].coordinates.lng;
 			var latlng = new google.maps.LatLng(lat, lng);
 			var name = locations[i].facility;
-			var address = parseAddress(locations[i].address)
+			var address = parseAddress(locations[i].address);
 			
 			createMarker(latlng, name, address.city, address.state, address.zip, i);
 			
@@ -147,9 +125,9 @@ var rmProgramFinder = (function() {
 		});
 		
 		google.maps.event.addListener(marker, 'mouseover', function() {
-			//var iwContent = getIWContent(num, 1);
+			var iwContent = getIWContent(num, 1);
 			
-			//infoWindow.setContent(iwContent);
+			infoWindow.setContent(iwContent);
 			
 			infoWindow.open(map, marker);
 		});
@@ -187,77 +165,52 @@ var rmProgramFinder = (function() {
         markers = [];
       }
     
-    
-    /*
-    *   Initialize DatePicker
-    */
-    
-    var datePicker_init = function(){
-        //console.log("datepicker init", dates);
-        $('#datePicker').datepicker({
-            format: 'mm/dd/yyyy',
-            showClear: true,
-			 clearBtn: true,
-            autoclose: true,
-            todayHighlight: true,
-            toggleActive: true,
-			enabledDates : dates,
-            beforeShowDay: function(date){
-				
-                var d = date;
-                var curr_date = d.getDate();
-                var curr_month = d.getMonth() + 1; //Months are zero based
-                var curr_year = d.getFullYear();
-                if(curr_date < 10) {
-                    var formattedDate = curr_month + "/0" + curr_date + "/" + curr_year;
-                } else {
-                    var formattedDate = curr_month + "/" + curr_date + "/" + curr_year;
-                }
-
-                /*if($.inArray(formattedDate, dates) !== -1) {
-                    return {
-                        classes: 'activeDate'
-                    };
-                }
-                */
-				//console.log("date to check", formattedDate);
-				for(var i = 0; i < dates.length; i++){
-					if(dates[i] == formattedDate){
-						console.log("matched ", dates[i], formattedDate);
-					}
-				}
-				
-				if(dates.indexOf(formattedDate) !== -1) {
-					console.log("datecheck", dates.indexOf(formattedDate));
-                    return {
-                        classes: 'activeDate'
-					}
-                }
-            },
-            autoClose: true
-        });
-
-
-        $('#datePicker').datepicker().on('clearDate', function(event){
-            //
-            console.log("clear date");
-			event.preventDefault();
-    		event.stopPropagation();
-			
-
-            //$("#date-select").data('datepicker').setDate(null);
-            $("#date-select").val = "Any";
-            //$('#datePicker').datepicker('update','');
-
-            //event.stopPropagation();
-
-            //console.log("prop", event.isPropagationStopped());
-            //updateFilter();
-            //updateMap(display_json);
-
-        });//*/
-
+// function gets information from events that
+// match location for marker
+// and creates content for infowindow
+function getIWContent(num, type) {
+    var contentString = '';
+    var mouse;
+    console.log("getiwcontent", locations[i].address);
+    if(type === 1) {
+        mouse = true;
+        contentString = '<div id="iw_container" style="font-family: Verdana, Arial, Helvetica, sans-serif">' +
+            '<div class="iw_title">addr' + '</div>' +
+            '<div class="iw-content"><div class="iw-subTitle">List of Classes:</div><ul class="classList">';
+    } else {
+        mouse = false;
+        contentString = '<div id="iw_container" style="font-family: Verdana, Arial, Helvetica, sans-serif">' +
+            '<div class="iw_title"> fac' +  '</div>'  + 
+            '<div class="iw-content">';
     }
+    
+   /* for(var i = 0; i < arrEvents.length; i++) {
+        var positionName = arrEvents[i].location;
+        
+        if(arrLocations[num].locationName === positionName) {
+            if(!mouse) {
+                contentString = contentString +
+                    '<div class="iw-subTitle">Date:</div> ' + arrEvents[i].date + '<br/>' +
+					'<div class="iw-subTitle">Topic:</div> ' + arrEvents[i].topic + '<br/>' +
+					'<div class="iw-subTitle">Code:</div> ' + arrEvents[i].code + '<br/><br/>' +
+                    '<hr>';
+            } else {
+                contentString = contentString + 
+					'<li>' + arrEvents[i].topic + '</li>';
+            }
+        } // end if location name = event location
+    } // end for event length*/
+    
+    if(type === 1) {
+		contentString = contentString + '</ul></div><br/> <p class="clickInfo">Click the marker for more information</p> </div>';
+	} else {
+		contentString = contentString + '</div><div class="iw-bottom-gradient"></div></div>';
+	}
+    
+	return contentString; // return content for infowindow
+} 
+    
+
 	
 	var setDates = function(events){
 		var tmpDates = [];
@@ -316,16 +269,3 @@ var rmProgramFinder = (function() {
     }
     
 })();
-
-
-
-
-/*
-*   Document ready
-*/
-$(function() {
-   
-    //rmProgramFinder.init();
-    
-
-});
