@@ -6,16 +6,17 @@ if (typeof gmap_styles === 'undefined') {
     var gmap_styles = {}; //failed to load map styles
 }
 
-
 /*
-*       RM Program Finder Main
+*       gMap
 */
-var rmProgramFinder = (function() {
+var gMap = (function() {
 	
 	/* GMap references */
     var map = [];
 	var infoWindow = [];
 	var markers = [];
+	var _locations = [];
+	var mapCenter = new google.maps.LatLng(39.083362, -77.155253);
 	
 	/* Datepicker references */
 	var dates = [];
@@ -33,11 +34,9 @@ var rmProgramFinder = (function() {
     */
     var gmap_init = function(gmap_styles) {
         "use strict";
-
-       var globalLatLng = new google.maps.LatLng(39.083362, -77.155253);
-
+		
        var mapOptions = {
-          center: globalLatLng,
+          center: mapCenter,
           zoom: 7,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
           mapTypeControl: false,
@@ -48,38 +47,23 @@ var rmProgramFinder = (function() {
 
         map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
-        // a new Info Window is created
         infoWindow = new google.maps.InfoWindow();
     
 		// Event that closes the InfoWindow with a click on the map
 		google.maps.event.addListener(map, 'click', function() {
 			infoWindow.close();
 		});
-		
-		
-
-        //updateInfoWindowStyle();
-        //updateMapOnInfoClose();
-
-        //draw to events display
-        //draw(display_json);
     }
     
-   /* var filters_init = function(){
-        datePicker_init();
-        //other filters bind change
-    }*/
-	
-	
 	// This function will iterate over locations array
 	// creating markers with createMarker function
 	function displayMarkers(locations) {
 		//console.log("display markers " , locations);
-		var locationtemp = [];
+		_locations = locations;
 		
 		// this variable sets the map bounds and zoom level according to markers position
 		var bounds = new google.maps.LatLngBounds();
-		
+
 		 // For loop that runs through the info on markersData making it possible to createMarker function to create the marker
 		for(var i = 0; i < locations.length; i++) {
 			var lat = locations[i].coordinates.lat;
@@ -87,43 +71,70 @@ var rmProgramFinder = (function() {
 			var latlng = new google.maps.LatLng(lat, lng);
 			var name = locations[i].facility;
 			var address = parseAddress(locations[i].address);
-			
-			createMarker(latlng, name, address.city, address.state, address.zip, i);
-			
-			// Marker’s Lat. and Lng. values are added to bounds variable
-			bounds.extend(latlng);
+			_locations[i]._address = address;
+			_loc = locations[i]; //locations filter reference for binding to map marker
+			createMarker(latlng, name, address.city, address.state, address.zip, i, _loc); //add a marker
+			bounds.extend(latlng); //size map to fit marker
 		}
 		
-		// Finally the bounds variable is used to set the map bounds
-	   // with API’s fitBounds() function
-		//map.fitBounds(bounds);
+		//fit to bounds if more than one marker
+	   if(locations.length>1){
+			map.fitBounds(bounds);
+	   }else if(locations.length>0){
+		   //center map on single marker
+			map.setCenter(latlng)   
+	   }
+	   
+	   
 	}
 	
-	// This function creates each marker and sets their Info Window content
-	function createMarker(latlng, name, address, state, zip, num) {
+	// creates each marker and sets their Info Window content
+	function createMarker(latlng, name, address, state, zip, num, _loc) {
 		var marker = new google.maps.Marker({
 			map: map,
 			position: latlng,
 			title: name
 		});
 		
-		// This event expects a click on a marker
-	   // When this event is fired the infowindow content is created
-	   // and the infowindow is opened
+	   // on click marker - open info window
 		google.maps.event.addListener(marker, 'click', function() {
 			// Variable to define the HTML content to be inserted in the infowindow
-			//var iwContent = getIWContent(num, 0);
+			var iwContent = getIWContent(num, 0);
 			
 			map.setZoom(12);
 			
 			// including content to the infowindow
-			//infoWindow.setContent(iwContent);
+			infoWindow.setContent(iwContent);
+			map.setCenter(marker.getPosition());
 			
+			
+			//get to angular ref
+			var scope = angular.element($("#map-container")).scope();
+				//update angular location to match selected on map.
+				scope.$apply(function(num){
+					scope.search.location = _loc;
+					
+				});
+
+				// close info window / clear location filter
+				google.maps.event.addListener(infoWindow, 'closeclick', function(){
+					map.setZoom(7);
+					map.setCenter(mapCenter);
+					
+					//clear location selection
+					scope.$apply(function(num){
+						scope.search.location = null;
+					});
+				});
+				
+				
 			// opening the infowindow in the current map and at the current marker location
 			infoWindow.open(map, marker);
-			
+
 		});
 		
+		
+		// mouseover event on map marker
 		google.maps.event.addListener(marker, 'mouseover', function() {
 			var iwContent = getIWContent(num, 1);
 			
@@ -136,10 +147,11 @@ var rmProgramFinder = (function() {
 		
 	}
 	
+	// update map with new markers
 	function updateMap(locations){
 		deleteMarkers();
 		displayMarkers(locations);
-		console.log("map updated", locations.length);
+		
 	}
 	
 	// Sets the map on all markers in the array.
@@ -171,57 +183,27 @@ var rmProgramFinder = (function() {
 function getIWContent(num, type) {
     var contentString = '';
     var mouse;
-    console.log("getiwcontent", locations[i].address);
+
     if(type === 1) {
         mouse = true;
         contentString = '<div id="iw_container" style="font-family: Verdana, Arial, Helvetica, sans-serif">' +
-            '<div class="iw_title">addr' + '</div>' +
-            '<div class="iw-content"><div class="iw-subTitle">List of Classes:</div><ul class="classList">';
+            '<div class="iw_title">' + _locations[num]._address.state + '</div>' +
+            '<div class="iw-content"><div class="iw-subTitle">' + _locations[num].facility + '<br>' + _locations[num].numEvts + ' event' + (_locations[num].numEvts>1?'s':'') + '</div>' ;
     } else {
         mouse = false;
         contentString = '<div id="iw_container" style="font-family: Verdana, Arial, Helvetica, sans-serif">' +
-            '<div class="iw_title"> fac' +  '</div>'  + 
+            '<div class="iw_title">' + _locations[num].facility + '<br>' + _locations[num].address +  '</div>'  + 
             '<div class="iw-content">';
     }
     
-   /* for(var i = 0; i < arrEvents.length; i++) {
-        var positionName = arrEvents[i].location;
-        
-        if(arrLocations[num].locationName === positionName) {
-            if(!mouse) {
-                contentString = contentString +
-                    '<div class="iw-subTitle">Date:</div> ' + arrEvents[i].date + '<br/>' +
-					'<div class="iw-subTitle">Topic:</div> ' + arrEvents[i].topic + '<br/>' +
-					'<div class="iw-subTitle">Code:</div> ' + arrEvents[i].code + '<br/><br/>' +
-                    '<hr>';
-            } else {
-                contentString = contentString + 
-					'<li>' + arrEvents[i].topic + '</li>';
-            }
-        } // end if location name = event location
-    } // end for event length*/
-    
     if(type === 1) {
-		contentString = contentString + '</ul></div><br/> <p class="clickInfo">Click the marker for more information</p> </div>';
+		//contentString = contentString + '</ul></div><br/> <p class="clickInfo">Click the marker for more information</p> </div>';
 	} else {
-		contentString = contentString + '</div><div class="iw-bottom-gradient"></div></div>';
+		//contentString = contentString + '</div><div class="iw-bottom-gradient"></div></div>';
 	}
     
 	return contentString; // return content for infowindow
 } 
-    
-
-	
-	var setDates = function(events){
-		var tmpDates = [];
-		for(var i = 0; i < events.length; i++){
-			if(tmpDates.indexOf(events[i].date) ==-1){
-				tmpDates.push(events[i].date);	
-			}
-		}
-		dates = tmpDates;
-		//datePicker_init();
-	}
     
     //parses address into street address, state and zip
     var parseAddress = function(address) {
@@ -239,6 +221,7 @@ function getIWContent(num, type) {
         return returned;
     }
     
+	// unused - return array without duplicate items
     var getUnique = function(data, opt){
         var uniqueData = [];
         for(var i = 0; i < data.length; i++) {
@@ -249,6 +232,7 @@ function getIWContent(num, type) {
         }
     } 
     
+	// parse all the addresses in an array of addresses
     var parseAddresses = function(data){
         var tmpData = [];
         for(var i=0; i<data.length;i++){
@@ -264,8 +248,7 @@ function getIWContent(num, type) {
         "parseAddresses" : parseAddresses,
         "getUnique" : getUnique,
 		"displayMarkers" : displayMarkers,
-		"updateMap" : updateMap,
-		"setDates" : setDates
+		"updateMap" : updateMap
     }
     
 })();

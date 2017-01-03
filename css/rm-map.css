@@ -18,11 +18,12 @@ $white: #FFFFFF;
 #map-filter-controls {
 
 }
-
-#map-container {
-    max-width:1200px;
-    margin : 3em auto;
-	width:920px;
+@media (min-width: 992px) {
+	#map-container {
+		max-width:1200px;
+		margin : 3em auto;
+		width:920px;
+	}
 }
 
 #map-container a {
@@ -167,12 +168,15 @@ button.btn-custom>.ico {
 	width:100%;
 	height:100%;	
 	display:none;
+	opacity:0;
 	z-index:1100;
+	pointer-events: none;
 }
 
 .modal-vis {
 	background-image:linear-gradient(162deg,rgb(223,234,233) 0%,rgb(255,255,255) 95%,rgb(255,255,255) 100%);
-	width:540px;
+	width:100%;
+	max-width:540px;
 	height:80%;
 	box-shadow:0px 0px 4px rgba(0,0,0,0.65);
 	margin:auto auto;
@@ -186,12 +190,24 @@ button.btn-custom>.ico {
   font-size:.9em;
   line-height:145%;
    padding: .3em;
+   border-radius:.5em;
+   pointer-events: auto;
 }
 
 .modal-content-container {
     height: calc(100% - 2.5em);
     overflow-y: scroll;
     padding: 1.5em;	
+}
+
+.modal-vis:after {
+	display:block;
+	width:100%;
+	height:27px;
+	position:relative;
+	top:-25px;
+	background-image: linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,100) 100%);
+    content: " ";
 }
 
 .modal-vis>div:nth-of-type(1){
@@ -204,16 +220,20 @@ button.btn-custom>.ico {
 
 #modalOverlay {
 	background:#fff;
-	opacity:.5;	
+	/*opacity:.5;*/	
 	display:block;
 	width:100%;
 	height:100%;
+	opacity: 0;
+	transition: opacity 0.3s;
+	background: rgba(255, 255, 255, 0.6);
 }
 
 #programModal.modal-show {
 	display:block;
 	position:fixed;
 	z-index:1200;
+	opacity: 1;
 }
 
 .modal-vis h1 {
@@ -226,4 +246,30 @@ button.btn-custom>.ico {
 	color:#0C3F36;
 	font-weight:bold;
 	line-height:100%;
+}
+
+#programModal.modal-show .modal-vis,
+#programModal.modal-hide .modal-vis {
+	animation-duration: 0.3s;
+	animation-fill-mode: forwards;
+}
+
+
+
+#programModal.modal-show .modal-vis {
+	animation-name: anim-open;
+}
+#programModal.modal-hide .modal-vis {
+	animation-name: anim-close;
+}
+
+
+@keyframes anim-open {
+	0% { opacity: 0; transform: translate(150%, -50%); }
+	100% { opacity: 1; transform: translate(-50%, -50%);}
+}
+
+@keyframes anim-close {
+	0% { opacity: 1; }
+	100% { opacity: 0; transform: translate(-150%, -50%); }
 }
