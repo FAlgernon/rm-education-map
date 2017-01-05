@@ -1,17 +1,27 @@
 var events = {
         "topics" : [
-            {"id":0, "title": "Legal Issues: Recurring Medical Malpractice Topics - Six Case Examples"},
-            {"id":1, "title": "HIPAA Revisited"},
-            {"id":2, "title": "Closed Claims Study: Anesthesia"},
-            {"id":3, "title": "Primary Care - Risk Management in a Nutshell"},
-            {"id":4, "title": "OB/GYN - Risk Management in a Nutshell"},
-            {"id":5, "title": "Surgery - Minimizing Risk"},
-            {"id":6, "title": "Ophthalmology - Eye Opening Risk Issues"},
-            {"id":7, "title": "Emergency Medicine (EMR Issues)"},
-            {"id":8, "title": "Pediatrics"}            
+            {"id":0, "title": "Legal Issues: Recurring Medical Malpractice Topics - Six Case Examples",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_legal.shtml"},
+            {"id":1, "title": "HIPAA Revisited",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_pathology.shtml"},
+            {"id":2, "title": "Closed Claims Study: Anesthesia",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_extenders.shtml"},
+            {"id":3, "title": "Primary Care - Risk Management in a Nutshell",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_telemedicine.shtml"},
+            {"id":4, "title": "OB/GYN - Risk Management in a Nutshell",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_electronic.shtml"},
+            {"id":5, "title": "Surgery - Minimizing Risk",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_legal.shtml"},
+            {"id":6, "title": "Ophthalmology - Eye Opening Risk Issues",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_legal.shtml"},
+            {"id":7, "title": "Emergency Medicine (EMR Issues)",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_legal.shtml"},
+            {"id":8, "title": "Pediatrics",
+            "descriptionURL" : "//www.mmlis.com/education_program/seminar_legal.shtml"}           
         ],
         "locations" : [
             {
+        "id":0,
                 "locationName": "DoubleTree Annapolis",
                 "facility": "DoubleTree Hotel",
                 "address": "210 Holiday Ct, Annapolis, MD 21401",
@@ -21,6 +31,7 @@ var events = {
                 }
             },
             {
+                "id":1,
                 "locationName": "UpperChesapeake BelAir",
                 "facility": "Upper Chesapeake Med. Ctr.", 
                 "address": "500 Upper Chesapeake Dr, Bel Air, MD 21014",
@@ -30,6 +41,7 @@ var events = {
                 }
             },
             {
+                "id":2,
                 "locationName": "UMDMedCenter Chestertown",
                 "facility": "The University of MD Shore Medical Center at Chestertown",
                 "address": "100 Brown St, Chestertown, MD 21620",
@@ -39,6 +51,7 @@ var events = {
                 }
             },
             {
+                "id":3,
                 "locationName": "ColonyHotel Clinton",
                 "facility": "Colony South Hotel",
                 "address": "7401 Surratts Rd, Clinton, MD 20735",
@@ -48,6 +61,7 @@ var events = {
                 }
             },
             {
+                "id":4,
                 "locationName": "MedMutual Cockeysville",
                 "facility": "Medical Mutual",
                 "address": "225 International Cir, Cockeysville, MD 21030",
@@ -57,6 +71,7 @@ var events = {
                 }
             },
             {
+                "id":5,
                 "locationName": "MeetingHouse Columbia",
                 "facility": "The Meeting House",
                 "address": "5885 Robert Oliver Pl, Columbia, MD 21045",
@@ -66,6 +81,7 @@ var events = {
                 }
             },
             {
+                "id":6,
                 "locationName": "RegionalMed Cumberland",
                 "facility": "Western MD Regional Med. Ctr.",
                 "address": "12500 Willowbrook Rd, Cumberland, MD 21502",
@@ -75,6 +91,7 @@ var events = {
                 }
             },
             {
+                "id":7,
                 "locationName": "ComfortInn Easton",
                 "facility": "Comfort Inn",
                 "address": "8523 Ocean Gateway, Easton, MD 21601",
@@ -84,6 +101,7 @@ var events = {
                 }
             },
             {
+                "id":8,
                 "locationName": "HiltonGarden Frederick",
                 "facility": "Hilton Garden Inn",
                 "address": "7226 Corporate Ct, Frederick, MD 21703",
@@ -93,6 +111,7 @@ var events = {
                 }
             },
             {
+                "id":9,
                 "locationName": "HagerHall Hagerstown",
                 "facility": "Hager Hall Conf. & Event Ctr.",
                 "address": "901 Dual Hwy, Hagerstown, MD 21740",
@@ -102,6 +121,7 @@ var events = {
                 }
             },
             {
+                "id":10,
                 "locationName": "BestWestern Lanham",
                 "facility": "Best Western Hotel",
                 "address": "5910 Princess Garden Pkwy, Lanham, MD 20706",
@@ -111,6 +131,7 @@ var events = {
                 }
             },
             {
+                "id":11,
                 "locationName": "RegionalHos Laurel",
                 "facility": "Laurel Regional Hospital",
                 "address": "7300 Van Dusen Rd, Laurel, MD 20707",
@@ -120,6 +141,7 @@ var events = {
                 }
             },
             {
+                "id":12,
                 "locationName": "HiltonGarden Rockville",
                 "facility": "Hilton Garden Inn",
                 "address": "14975 Shady Grove Rd, Rockville, MD 20850",
@@ -129,6 +151,7 @@ var events = {
                 }
             },
             {
+                "id":13,
                 "locationName": "ShadyGrove Rockville",
                 "facility": "The Universities at Shady Grove",
                 "address": "9630 Gudelsky Dr, Rockville, MD 20850",
@@ -138,6 +161,7 @@ var events = {
                 }
             },
             {
+                "id":14,
                 "locationName": "PeninsulaRegional Salisbury",
                 "facility": "Peninsula Regional Med. Ctr.",
                 "address": "100 E Carroll St, Salisbury, MD 21801",
@@ -147,6 +171,7 @@ var events = {
                 }
             },
             {
+                "id":15,
                 "locationName": "HolyCross SilverSpring",
                 "facility": "Holy Cross Hospital",
                 "address": "1500 Forest Glen Rd, Silver Spring, MD 20910",
@@ -156,6 +181,7 @@ var events = {
                 }
             },
             {
+                "id":16,
                 "locationName": "CalvertHos PrinceFrederick",
                 "facility": "Calvert Memorial Hospital",
                 "address": "100 Hospital Rd, Prince Frederick, MD 20678",
@@ -165,6 +191,7 @@ var events = {
                 }
             },
             {
+                "id":17,
                 "locationName": "SuburbanHos Bethesda",
                 "facility": "Suburban Hostpital",
                 "address": "8600 Old Georgetown Rd, Bethesda, MD 20814",
@@ -174,6 +201,7 @@ var events = {
                 }
             },
             {
+                "id":18,
                 "locationName": "CarrollHos Westminster",
                 "facility": "Carroll Hospital Center",
                 "address": "200 Memorial Ave, Westminster, MD 21157",
@@ -183,6 +211,7 @@ var events = {
                 }
             },
             {
+                "id":19,
                 "locationName": "StMaryHos Leonardtown",
                 "facility": "St. Mary's Hospital",
                 "address": "25500 Point Lookout Rd, Leonardtown, MD 20650",
@@ -228,115 +257,115 @@ var events = {
               "topic" : 0,
               "date": "05/08/2017",
               "code": "5046",
-              "location": 0
+              "location": 2
             },
             {
               "topic" : 0,
               "date": "06/22/2017",
               "code": "5047",
-              "location": 0
+              "location": 3
             },
             {
               "topic" : 0,
               "date": "06/26/2017",
               "code": "5047",
-              "location": 0
+              "location": 4
             },
             {
               "topic" : 0,
               "date": "07/19/2017",
               "code": "5048",
-              "location": 0
+              "location": 5
             },
             {
               "topic" : 0,
               "date": "07/20/2017",
               "code": "5049",
-              "location": 0
+              "location": 6
             },
             {
               "topic" : 0,
               "date": "08/09/2017",
               "code": "5050",
-              "location": 0 
+              "location": 7 
             },
             {
               "topic" : 0,
               "date": "08/21/2017",
               "code": "5051",
-              "location": 0
+              "location": 8
             },
             {
               "topic" : 0,
               "date": "09/05/2017",
               "code": "5052",
-              "location": 0
+              "location": 9
             },
             {
               "topic" : 0,
               "date": "09/14/2017",
               "code": "5053",
-              "location": 0
+              "location": 10
             },
             {
               "topic" : 0,
               "date": "09/19/2017",
               "code": "5054",
-              "location": 0
+              "location": 11
             },
             {
               "topic" : 0,
               "date": "09/25/2017",
               "code": "5055",
-              "location": 0
+              "location": 12
             },
             {
               "topic" : 0,
               "date": "09/27/2017",
               "code": "5056",
-              "location": 0
+              "location": 13
             },
             {
               "topic" : 1,
               "date": "03/07/2017",
               "code": "5057",
-              "location": 1
+              "location": 14
             },
             {
               "topic" : 1,
               "date": "04/03/2017",
               "code": "5058",
-              "location": 1
+              "location": 15
             },
             {
               "topic" : 1,
               "date": "04/27/2017",
               "code": "5059",
-              "location": 1
+              "location": 16
             },
             {
               "topic" : 1,
               "date": "06/05/2017",
               "code": "5060",
-              "location": 1 
+              "location": 17
             },
             {
               "topic" : 1,
               "date": "06/15/2017",
               "code": "5061",
-              "location": 1
+              "location": 18
             },
             {
               "topic" : 1,
               "date": "06/21/2017",
               "code": "5062",
-              "location": 1
+              "location": 19
             },
             {
               "topic" : 1,
               "date": "07/31/2017",
               "code": "5063",
-              "location": 1
+              "location": 19
             },
             {
               "topic" : 1,
@@ -576,31 +605,31 @@ var events = {
                "topic" : 8,
                "date": "03/08/2017",
                "code": "",
-               "location": 8
+               "location": 7
              },
              {
                "topic" : 8,
                "date": "05/03/2017",
                "code": "",
-               "location": 8
+               "location":7
              },
              {
                "topic" : 8,
                "date": "05/22/2017",
                "code": "",
-               "location": 8
+               "location": 7
              },
              {
                "topic" : 8,
                "date": "05/30/2017",
                "code": "",
-               "location": 8
+               "location": 7
              },
              {
                "topic" : 8,
                "date": "08/31/2017",
                "code": "",
-               "location": 8
+               "location": 7
              },
              {
                "topic" : 8,

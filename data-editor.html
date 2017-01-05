@@ -22,7 +22,7 @@
 		<div id="map-results-container" ng-repeat="event in eventData.events">
 			<div class="map-results-each col-md-12">
                 <div class="result-date col-md-2">
-                    <input ng-model="event.date">
+                    <input ng-model="event.date" class="form-control shadow">
                 </div>
 
 				<div class="col-md-8">
@@ -34,12 +34,12 @@
                     
                     
 					<br>
-                    {{getTopic(event.topic).title}}<br>
-                    {{getLocation(event.location)}}
+                    <select name="location_select" id="location-select" class="form-control shadow" data-live-search="true" ng-model="event.location" ng-options="location.id as location.locationName for location in eventData.locations " ng-change="filterLocationUpdate()">
+                    </select>
 				</div>
 
 				<div class="col-md-2">
-					<input ng-model="event.code">
+					<input ng-model="event.code" class="form-control shadow">
 					
 				</div>
 
