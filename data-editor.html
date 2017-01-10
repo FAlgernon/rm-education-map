@@ -1,7 +1,7 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="css/rm-map.css">
-    <link href="css/bootstrap.min.orig.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css">
     <script>
         function google_init(){
@@ -19,6 +19,7 @@
       
         </div>
 	<div id="map-container" data-ng-app="rm_data" data-ng-controller="data_ctrl">
+        <div ng-view> view </div>
 		<div class="row">
             <div class="col-sm-4">
                 <button class="btn btn-success btn-block" id="add_event" data-toggle="modal" data-target="#addEventModal" ng-click="showAddEvent()"><span class="glyphicon glyphicon-plus pull-left" ></span> Add Event </button>
@@ -27,8 +28,9 @@
 		<div id="map-results-container" ng-repeat="event in (eventData.events | orderBy: 'date')">
 			<div class="map-results-each row">
                 <div class="result-date col-sm-2">
-                    <input ng-bind="(event.date | date : 'yyyy-MM-dd')" class="form-control shadow" placeholder="Date" type="date" value="{{event.date | date : 'yyyy-MM-dd'}}">
-                    
+                    <!--<input ng-bind="(event.date | date : 'yyyy-MM-dd')" class="form-control shadow" placeholder="Date" type="date">-->
+                     <h4>{{event.date | date : 'MMM dd, yyyy'}}</h4>
+                     <button class="btn btn-danger btn-sm" id="rm_event" ng-click="confirmDeleteEvent($index)"><span class="glyphicon glyphicon-remove-sign"> </span>&nbsp; Remove </button>
                 </div>
 
 				<div class="col-sm-7">
@@ -48,7 +50,7 @@
 					<input ng-model="event.code" class="form-control shadow" placeholder="Code"><br>
 					<input ng-model="event.url" class="form-control shadow" placeholder="Register URL">
                     <br>
-                    <button class="btn btn-danger btn-sm pull-right" id="rm_event" ng-click="confirmDeleteEvent($index)"><span class="glyphicon glyphicon-remove-sign pull-left"> </span>&nbsp; Remove </button>
+                    
 				</div>
 
 
@@ -107,6 +109,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/angular.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
     <script src="js/ui-bootstrap-tpls-2.3.2.min.js"></script>
     <script src="js/bootstrap.js"></script>
@@ -115,7 +118,7 @@
 
     <script>
         
-        var app = angular.module('rm_data', ['ui.bootstrap', 'ngSanitize']);
+        var app = angular.module('rm_data', ['ui.bootstrap', 'ngSanitize',  'ngRoute']);
         app.controller('data_ctrl', function($scope, $http, $filter, $sce) {
             //$http.get("http://www.w3schools.com/angular/customers.php")            .then(function (response) {$scope.names = response.data.records;});
             
@@ -173,6 +176,88 @@
                 console.log("date parse", $scope.eventData.events[i].date);
             }*/
         });
+
+
+
+
+var routeParams = [];
+/* Routes */
+app.config(['$routeProvider',
+  function($routeProvider) {
+    $routeProvider.
+      when('/locations/:locationId', {
+        templateUrl: 'partials/locations.html',
+        controller: 'locationsControl'
+      }).
+      when('/topics/:topicId/', {
+        templateUrl: 'partials/topics.html',
+        controller: 'topicsControl'
+      }).
+      otherwise({
+        redirectTo: '/'
+      });
+  }]);
+  
+  /*app.factory('dataService', function() {
+        var portfolioData = {};
+        return {
+            getData:function(){return portfolioData;},
+            setData:function(data){portfolioData=data;}
+        };
+    });*/
+
+/*  portfolioApp.directive('sample', function () {
+    return {
+        restrict: "E",
+        replace: true,
+        transclude: true,
+        template: "<div></div>",
+        controller: function ($scope, $element) {
+            this.act = function (something) {
+               $($element).trigger("imageModal.launch", [something]);
+            };
+        }
+    };
+})*/
+
+/*function ContactController($scope, $routeParams){ 
+    $scope.contactSubmit = function(id, session){
+        console.log("session id - prevent spam with timer", session);
+        console.log(document.getElementById(id));
+    }
+}*/
+
+
+/* Controllers */
+var dataControllers = angular.module('dataControllers', []);
+dataControllers.controller('locationsControl', ['$scope', '$http', '$routeParams', 
+  function($scope, $http, $routeParams, dataService) {
+        /*$http.get('data/portfolio.json').success(function(data) {
+          $scope.workItems = _.where(data, {"category" : $routeParams.subCategory || "web"});
+          jsonData = data;
+        });*/
+
+    $scope.orderProp = 'id';
+    $scope.category = $routeParams.locationId;
+    routeParams = $routeParams;
+    console.log("category", $scope.category);
+  }]);
+
+dataControllers.controller('topicsControl', ['$scope','$http', '$routeParams', '$sce',
+  function($scope, $http, $routeParams, $sce) {
+        /*$http.get('data/portfolio.json').success(function(data) {
+          first = _.where(data, {"id" : $routeParams.itemId});
+          second = _.where(first[0].images, {"id" : $routeParams.mediaId});
+          $scope.gallery = first[0].images;
+          $scope.dataItem = second[0];
+          $scope.trustedURL = $sce.trustAsUrl($scope.dataItem.fullUrl);
+        }); */
+    $scope.orderProp = 'id';
+    $scope.category = $routeParams.topicId;
+    routeParams = $routeParams;
+    console.log("category", $scope.category);
+    
+  }]);
 
     </script>
     
