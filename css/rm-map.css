@@ -29,9 +29,9 @@ $white: #FFFFFF;
 #map-container a {
     color:#276A61;
 }
-
+#map-container .row {margin:.5em 0;}
 #map-results-container {
-    padding:2em 0;
+
 }
 
 .map-results-each {
@@ -273,3 +273,4 @@ button.btn-custom>.ico {
 	0% { opacity: 1; }
 	100% { opacity: 0; transform: translate(-150%, -50%); }
 }
+

@@ -8,6 +8,9 @@
             //google maps ready
         }
     </script>
+    <style>
+        .row {margin:.5em 0;}
+    </style>
     
 <title>MMLIS RM Program Finder</title>
 </head>
@@ -30,7 +33,7 @@
     
 </div>
 
-		<div id="map-filter-controls">
+		<div id="map-filter-controls" class="row">
             <form id="filter-controls" class="col-md-4">
                 
                 <!--Search Date Filter-->
@@ -81,7 +84,12 @@
             </div>
             
 		</div>
-
+        <div class="row">
+            
+            <div class="col-md-1"> </div>
+            <div class="col-md-11"> {{resultCount()}} </div>
+            
+        </div>
 		<div infinite-scroll='loadMore()' infinite-scroll-distance='0.1'>
             <div id="map-results-container" ng-repeat="event in (filteredData = (eventData.events | eventFilter:search:this)).slice(0,loadMax)">
                 <div class="map-results-each col-md-12">
@@ -179,6 +187,18 @@
 			$scope.parseDate = function(date){
 				return Date.parse(date);
 			}
+            
+            //Return count of matched results array
+            $scope.resultCount = function(){
+                var response = "";
+                var datLen = $scope.filteredData.length;
+                if(datLen > 0){
+                    response += "Matched " + datLen + ( (datLen > 1) ? " events." : " event.");
+                }else{
+                    response += "No Results Matching criteria. Please revise your search."
+                }
+                return response;
+            }
 			
 			//Get locations to matched events
 			$scope.matchingLocations = function(eventsData){
