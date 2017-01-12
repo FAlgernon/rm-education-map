@@ -245,14 +245,21 @@
 
 		  // Disable dates not in events data
 		  function disabled(data) {
-			var cDate = $filter('date')(data.date, 'MM/dd/yyyy');
+			var cDate = data.date;//$filter('date')(data.date, 'MM/dd/yyyy');
 			var check = $scope.checkDateInEvents(cDate);
 			return data.mode == 'day' && !check;
 		  }
 		  
 			$scope.checkDateInEvents = function($date){
 			 for(var i = 0; i < $scope.eventData.events.length; i++){
-				if($scope.eventData.events[i].date == $date){
+				 var dA = new Date($scope.eventData.events[i].date);
+				 var dB = new Date($date);
+				 dA.setHours(0,0,0,0);
+				 dB.setHours(0,0,0,0);
+				 
+				 
+				if(dA.getTime() == dB.getTime()){
+					
 					return true;
 					break;
 				}
