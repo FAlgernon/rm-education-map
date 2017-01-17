@@ -3,47 +3,83 @@
     {
       "id": 0,
       "title": "Legal Issues: Recurring Medical Malpractice Topics - Six Case Examples",
-      "descriptionURL": "//www.mmlis.com/education_program/seminar_legal.shtml"
+      "descriptionURL": "//www.mmlis.com/education_program/seminar_legal.shtml",
+        "description" : {
+            "presentedBy" : "Presented by attorneys from the law firm of Armstrong, Donohue, Ceppos, Vaughan & Rhoades, Chtd.",
+            "overviewHtml" : "<h3>Test</h3>"
+        }
     },
     {
       "id": 1,
       "title": "HIPAA Revisited",
-      "descriptionURL": "//www.mmlis.com/education_program/seminar_pathology.shtml"
+      "descriptionURL": "//www.mmlis.com/education_program/seminar_pathology.shtml",
+        "description" : {
+            "presentedBy" : "Presented by attorneys from the law firm of Armstrong, Donohue, Ceppos, Vaughan & Rhoades, Chtd.",
+            "overviewHtml" : "<h3>Test</h3>"
+        }
     },
     {
       "id": 2,
       "title": "Closed Claims Study: Anesthesia",
-      "descriptionURL": "//www.mmlis.com/education_program/seminar_extenders.shtml"
+      "descriptionURL": "//www.mmlis.com/education_program/seminar_extenders.shtml",
+        "description" : {
+            "presentedBy" : "Presented by attorneys from the law firm of Armstrong, Donohue, Ceppos, Vaughan & Rhoades, Chtd.",
+            "overviewHtml" : "<h3>Test</h3>"
+        }
     },
     {
       "id": 3,
       "title": "Primary Care - Risk Management in a Nutshell",
-      "descriptionURL": "//www.mmlis.com/education_program/seminar_telemedicine.shtml"
+      "descriptionURL": "//www.mmlis.com/education_program/seminar_telemedicine.shtml",
+        "description" : {
+            "presentedBy" : "Presented by attorneys from the law firm of Armstrong, Donohue, Ceppos, Vaughan & Rhoades, Chtd.",
+            "overviewHtml" : "<h3>Test</h3>"
+        }
     },
     {
       "id": 4,
       "title": "OB/GYN - Risk Management in a Nutshell",
-      "descriptionURL": "//www.mmlis.com/education_program/seminar_electronic.shtml"
+      "descriptionURL": "//www.mmlis.com/education_program/seminar_electronic.shtml",
+        "description" : {
+            "presentedBy" : "Presented by attorneys from the law firm of Armstrong, Donohue, Ceppos, Vaughan & Rhoades, Chtd.",
+            "overviewHtml" : "<h3>Test</h3>"
+        }
     },
     {
       "id": 5,
       "title": "Surgery - Minimizing Risk",
-      "descriptionURL": "//www.mmlis.com/education_program/seminar_legal.shtml"
+      "descriptionURL": "//www.mmlis.com/education_program/seminar_legal.shtml",
+        "description" : {
+            "presentedBy" : "Presented by attorneys from the law firm of Armstrong, Donohue, Ceppos, Vaughan & Rhoades, Chtd.",
+            "overviewHtml" : "<h3>Test</h3>"
+        }
     },
     {
       "id": 6,
       "title": "Ophthalmology - Eye Opening Risk Issues",
-      "descriptionURL": "//www.mmlis.com/education_program/seminar_legal.shtml"
+      "descriptionURL": "//www.mmlis.com/education_program/seminar_legal.shtml",
+        "description" : {
+            "presentedBy" : "Presented by attorneys from the law firm of Armstrong, Donohue, Ceppos, Vaughan & Rhoades, Chtd.",
+            "overviewHtml" : "<h3>Test</h3>"
+        }
     },
     {
       "id": 7,
       "title": "Emergency Medicine (EMR Issues)",
-      "descriptionURL": "//www.mmlis.com/education_program/seminar_legal.shtml"
+      "descriptionURL": "//www.mmlis.com/education_program/seminar_legal.shtml",
+        "description" : {
+            "presentedBy" : "Presented by attorneys from the law firm of Armstrong, Donohue, Ceppos, Vaughan & Rhoades, Chtd.",
+            "overviewHtml" : "<h3>Test</h3>"
+        }
     },
     {
       "id": 8,
       "title": "Pediatrics",
-      "descriptionURL": "//www.mmlis.com/education_program/seminar_legal.shtml"
+      "descriptionURL": "//www.mmlis.com/education_program/seminar_legal.shtml",
+        "description" : {
+            "presentedBy" : "Presented by attorneys from the law firm of Armstrong, Donohue, Ceppos, Vaughan & Rhoades, Chtd.",
+            "overviewHtml" : "<h3>Test</h3>"
+        }
     }
   ],
   "locations": [

@@ -1,1 +1,12 @@
-<div>topics</div>
+<div>Topics</div>
+<div class="row">
+    <select class="form-control shadow" data-live-search="true" ng-model="editTopic" ng-options="idx as topic.title for (idx, topic) in eventData.topics" ng-change="setTopicDescription()">
+    </select>
+</div>
+<div class="row">
+<trix-editor ng-model-options="{ updateOn: 'blur' }" spellcheck="false" class="trix-content" ng-model="trix" angular-trix trix-initialize="trixInitialize(e, editor);" trix-change="trixChange(e, editor);" trix-selection-change="trixSelectionChange(e, editor);" trix-focus="trixFocus(e, editor);" trix-blur="trixBlur(e, editor);" trix-file-accept="trixFileAccept(e, editor);" trix-attachment-add="trixAttachmentAdd(e, editor);" trix-attachment-remove="trixAttachmentRemove(e, editor);" placeholder="Write something.."></trix-editor>
+</div>
+<div class="row">
+    <button type="button" class="btn btn-default">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="saveTopicDescription()">Save</button>
+</div>
