@@ -1,10 +1,10 @@
 
-		<div class="row">
-            <div class="col-sm-4">
+		<div class="row event-btn-grp" ng-init="setNav('events')">
+            <div class="col-sm-4 btn-group">
                 <button class="btn btn-success btn-block" id="add_event" data-toggle="modal" data-target="#addEventModal" ng-click="showAddEvent()"><span class="glyphicon glyphicon-plus pull-left" ></span> Add Event </button>
             </div>
         </div>
-		<div id="map-results-container" ng-repeat="event in (eventData.events | orderBy: 'date')">
+		<div class="map-results-container" ng-repeat="event in (eventData.events | orderBy: 'date')">
 			<div class="map-results-each row">
                 <div class="result-date col-sm-2">
                     <!--<input ng-bind="(event.date | date : 'yyyy-MM-dd')" class="form-control shadow" placeholder="Date" type="date">-->

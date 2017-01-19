@@ -1,12 +1,39 @@
-<div>Topics</div>
-<div class="row">
-    <select class="form-control shadow" data-live-search="true" ng-model="editTopic" ng-options="idx as topic.title for (idx, topic) in eventData.topics" ng-change="setTopicDescription()">
-    </select>
+<h2 ng-init="setNav('topics')">Topics</h2>
+<div class="row event-btn-grp">
+	<div class="form-group">
+	    <label for="editTopic">Select a Topic to Edit</label>
+
+		    <select id="editTopic" class="form-control shadow" data-live-search="true" ng-model="editTopic" ng-options="idx as topic.title for (idx, topic) in eventData.topics" ng-change="setTopicDescription()">
+		    </select>
+		
+
+	</div>
+	<div class="form-group">
+	    <label for="editTopicTitle">Topic Title</label>
+	    <input id="editTopicTitle" ng-model="editTopicTitle" class="form-control shadow" placeholder="Register URL">
+
+	    
+	</div>
+	<div class="form-group">
+	    <label for="editTopicPresentedBy">Presented By</label>
+	    <input id="editTopicPresentedBy" ng-model="editTopicPresentedBy" class="form-control shadow" placeholder="Register URL">
+	    
+	</div>
+	<div class="form-group">
+	    <label for="editTopicRegisterUrl">Register URL</label>
+	    <input id="editTopicRegisterUrl" ng-model="editTopicRegisterUrl" class="form-control shadow" placeholder="https://">
+	    
+	</div>
 </div>
-<div class="row">
-<trix-editor ng-model-options="{ updateOn: 'blur' }" spellcheck="false" class="trix-content" ng-model="trix" angular-trix trix-initialize="trixInitialize(e, editor);" trix-change="trixChange(e, editor);" trix-selection-change="trixSelectionChange(e, editor);" trix-focus="trixFocus(e, editor);" trix-blur="trixBlur(e, editor);" trix-file-accept="trixFileAccept(e, editor);" trix-attachment-add="trixAttachmentAdd(e, editor);" trix-attachment-remove="trixAttachmentRemove(e, editor);" placeholder="Write something.."></trix-editor>
+
+<div class="row event-btn-grp">
 </div>
-<div class="row">
+
+<div class="row event-btn-grp">
+	<text-angular ng-model="trix"></text-angular>
+</div>
+
+<div class="row event-btn-grp">
     <button type="button" class="btn btn-default">Cancel</button>
     <button type="button" class="btn btn-primary" ng-click="saveTopicDescription()">Save</button>
 </div>
