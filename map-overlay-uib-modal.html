@@ -24,8 +24,10 @@
     	<div class="col-sm-12">Program Description <a href="" ng-click="modalClose()" class="rm-ico ico-x close-x pull-right"><i>x</i></a></div>
         
     </div>
-        <div ng-bind-html="programDescriptionHTML" ng-model="modalOpenClose" class="modal-content-container">
-        
+    <!--ng-bind-html="programDescriptionHTML"-->
+        <div ng-model="modalOpenClose" class="modal-content-container">
+        	<div ng-include="modalTemplate"></div>
+            
         </div>
     </div>
     
@@ -86,12 +88,12 @@
 		</div>
         <div class="row">
             
-            <div class="col-md-1"> </div>
-            <div class="col-md-11"> {{resultCount()}} </div>
+            <div class="col-md-12"> {{resultCount()}} </div>
+            
             
         </div>
 		<div infinite-scroll='loadMore()' infinite-scroll-distance='0.1'>
-            <div id="map-results-container" ng-repeat="event in (filteredData = (eventData.events | eventFilter:search:this)).slice(0,loadMax)">
+            <div id="map-results-container" ng-repeat="event in (filteredData = (eventData.events | eventFilter:search:this | orderBy: 'date')).slice(0,loadMax)">
                 <div class="map-results-each col-md-12">
                     <div class="result-date col-md-2">
                         <ul>
@@ -104,13 +106,13 @@
     
                     <div class="col-md-8">
                         <h3>{{eventData.topics[event.topic].title}}</h3>
-                        <span>{{eventData.locations[event.location].address}}</span>
+                        <a class="rm-ico ico-car event-address" href="https://google.com/maps?q={{eventData.locations[event.location].address}}" target="_blank">{{eventData.locations[event.location].address}}</a>
                     </div>
     
                     <div class="col-md-2 result-right">
                         <h4>{{event.code}}</h4>
-                        <a href="" class="rm-ico ico-eye" ng-click="programDescription(event.topic)">Program Description</a><br>
-                        <a href="#" class="rm-ico ico-check">Register</a>
+                        <a href="" class="rm-ico ico-eye" ng-click="programDescription(event.topic, event.url)">Program Description</a><br>
+                        <a href="{{event.url}}" class="rm-ico ico-check" target="_blank">Register</a>
                     </div>
                 </div>
             </div>
@@ -140,6 +142,8 @@
 			$scope.search = {location:null, code:null, date:null, topic:null, $:null};
 			
 			//Modal Options
+			$scope.displayTopic = {};
+			$scope.modalTemplate = "partials/program-description.html";
 			$scope.programDescriptionHTML = "loading...";
 			$scope.modalToggle = "modal-hide";
 			$scope.modalStates = {visible:"modal-show", hidden:"modal-hide"};
@@ -193,7 +197,7 @@
                 var response = "";
                 var datLen = $scope.filteredData.length;
                 if(datLen > 0){
-                    response += "Matched " + datLen + ( (datLen > 1) ? " events." : " event.");
+                    response += "Matched " + datLen + ( (datLen > 1) ? " Events." : " Event.");
                 }else{
                     response += "No Results Matching criteria. Please revise your search."
                 }
@@ -238,11 +242,18 @@
 			}
 			
 			// Open modal for program description links
-			$scope.programDescription = function(loc){
-				$http.get('build.php?r='+$scope.eventData.topics[loc].descriptionURL).then(function(response){
+			$scope.programDescription = function(t, url){
+				/*$http.get('build.php?r='+$scope.eventData.topics[loc].descriptionURL).then(function(response){
 					$scope.programDescriptionHTML = response.data;		// Set Program Description HTML
 					$scope.modalToggle = $scope.modalStates.visible;	// Show Modal
-				}, errorCallback);
+				}, errorCallback);*/
+				
+				$scope.displayTopic = $scope.eventData.topics[t];
+				$scope.registerUrl = url;
+				$scope.programDescriptionHTML = $scope.displayTopic.description.overviewHtml;		// Set Program Description HTML
+				$scope.modalToggle = $scope.modalStates.visible;	// Show Modal
+				
+				
 				
 			};
 

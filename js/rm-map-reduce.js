@@ -113,7 +113,6 @@ var gMap = (function() {
 				//update angular location to match selected on map.
 				scope.$apply(function(num){
 					scope.search.location = _loc;
-					
 				});
 
 				// close info window / clear location filter
@@ -188,7 +187,7 @@ function getIWContent(num, type) {
         mouse = true;
         contentString = '<div id="iw_container" style="font-family: Verdana, Arial, Helvetica, sans-serif">' +
             '<div class="iw_title">' + _locations[num]._address.state + '</div>' +
-            '<div class="iw-content"><div class="iw-subTitle">' + _locations[num].facility + '<br>' + _locations[num].numEvts + ' event' + (_locations[num].numEvts>1?'s':'') + '</div>' ;
+            '<div class="iw-content"><div class="iw-subTitle">' + _locations[num].facility + '<br>' + _locations[num].numEvts + ' Event' + (_locations[num].numEvts>1?'s':'') + '</div>' ;
     } else {
         mouse = false;
         contentString = '<div id="iw_container" style="font-family: Verdana, Arial, Helvetica, sans-serif">' +

@@ -221,14 +221,14 @@ var rmProgramFinder = (function() {
                 }
                 */
 				//console.log("date to check", formattedDate);
-				for(var i = 0; i < dates.length; i++){
+				/*for(var i = 0; i < dates.length; i++){
 					if(dates[i] == formattedDate){
 						console.log("matched ", dates[i], formattedDate);
 					}
-				}
+				}*/
 				
 				if(dates.indexOf(formattedDate) !== -1) {
-					console.log("datecheck", dates.indexOf(formattedDate));
+					//console.log("datecheck", dates.indexOf(formattedDate));
                     return {
                         classes: 'activeDate'
 					}
@@ -240,7 +240,7 @@ var rmProgramFinder = (function() {
 
         $('#datePicker').datepicker().on('clearDate', function(event){
             //
-            console.log("clear date");
+            //console.log("clear date");
 			event.preventDefault();
     		event.stopPropagation();
 			

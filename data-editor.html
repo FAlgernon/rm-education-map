@@ -132,14 +132,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
     <script src="js/ui-bootstrap-tpls-2.3.2.min.js"></script>
     <script src="js/bootstrap.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular-rangy.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular-sanitize.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular-rangy.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular-sanitize.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular.min.js"></script>
     <script src="data/event-data-editor.json"></script>
 
     <script>
         var dataLoaded = false;
-        var app = angular.module('rm_data', ['ui.bootstrap', 'ngSanitize',  'ngRoute','angularTrix','textAngular']);
+        var app = angular.module('rm_data', ['ui.bootstrap', 'ngSanitize',  'ngRoute','textAngular']);
         app.controller('data_ctrl', function($scope, $http, $filter, $sce) {
             
             //consider better method of handling data
@@ -155,19 +155,7 @@
                 });
             }
             
-            $scope.trix = '<div>Enter Text</div>';
-            
-             var events = ['trixInitialize',/* 'trixChange', */'trixSelectionChange', 'trixFocus', 'trixBlur', 'trixFileAccept', 'trixAttachmentAdd', 'trixAttachmentRemove'];
-            for (var i = 0; i < events.length; i++) {
-                $scope[events[i]] = function(e) {
-                    console.info('Event type:', e.type);
-                }
-            };
-            
-            $scope.trixChange = function(e){
-                console.log("trix change", $scope.editTopic, $scope.eventData.topics[$scope.editTopic].description.overviewHtml);
-            }
-            
+            $scope.trix = '<div>Enter Text</div>';            
             
             $scope.newEvent = null;
             $scope.newTopic = null;
