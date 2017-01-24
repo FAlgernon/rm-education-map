@@ -1,39 +1,48 @@
 <h2 ng-init="setNav('topics')"  class="text-center">Topics</h2>
 <div class="row event-btn-grp">
+            <div class="col-md-3 btn-group pull-right">
+                <button class="btn btn-success btn-block" id="add_event" ng-click="newTopic()"><span class="glyphicon glyphicon-plus " ></span> New Topic </button>
+            </div>
+</div>
+        
+<div class="row event-btn-grp">
 	<div class="form-group">
 	    <label for="editTopic">Select a Topic to Edit</label>
 
 		    <select id="editTopic" class="form-control shadow" data-live-search="true" ng-model="editTopic" ng-options="idx as topic.title for (idx, topic) in eventData.topics" ng-change="setTopicDescription()">
 		    </select>
 		
-
-	</div>
-	<div class="form-group">
-	    <label for="editTopicTitle">Topic Title</label>
-	    <input id="editTopicTitle" ng-model="editTopicTitle" class="form-control shadow" placeholder="Topic Title">
-
-	    
-	</div>
-	<div class="form-group">
-	    <label for="editTopicPresentedBy">Presented By</label>
-	    <input id="editTopicPresentedBy" ng-model="editTopicPresentedBy" class="form-control shadow" placeholder="Register URL">
-	    
-	</div>
-	<div class="form-group">
-	    <label for="editTopicRegisterUrl">Register URL</label>
-	    <input id="editTopicRegisterUrl" ng-model="editTopicRegisterUrl" class="form-control shadow" placeholder="https://">
-	    
-	</div>
 </div>
+	</div>
+    <div class="{{editShowHide}} row event-btn-grp">
+        <div class="form-group">
+            <label for="editTopicTitle">Topic Title</label>
+            <input id="editTopicTitle" ng-model="editTopicTitle" class="form-control shadow" placeholder="Topic Title">
+    
+            
+        </div>
+        <div class="form-group">
+            <label for="editTopicPresentedBy">Presented By</label>
+            <input id="editTopicPresentedBy" ng-model="editTopicPresentedBy" class="form-control shadow" placeholder="Register URL">
+            
+        </div>
+        <div class="form-group">
+            <label for="editTopicRegisterUrl">Register URL</label>
+            <input id="editTopicRegisterUrl" ng-model="editTopicRegisterUrl" class="form-control shadow" placeholder="https://">
+            
+        </div>
+    </div>
 
-<div class="row event-btn-grp">
-</div>
+<div class="{{editShowHide}}">
 
-<div class="row event-btn-grp">
-	<text-angular ng-model="trix"></text-angular>
-</div>
-
-<div class="row event-btn-grp">
-    <button type="button" class="btn btn-default">Cancel</button>
-    <button type="button" class="btn btn-primary" ng-click="saveTopicDescription()">Save</button>
+    <div class="row event-btn-grp">
+        <text-angular ng-model="trix"></text-angular>
+    </div>
+    
+    <div class="row event-btn-grp">
+    	<div class="col-md-3 pull-right">
+        <button type="button" class="btn btn-default btn-lg">Cancel</button>
+        <button type="button" class="btn btn-primary btn-lg" ng-click="saveTopicDescription()">Save</button>
+        </div>
+    </div>
 </div>

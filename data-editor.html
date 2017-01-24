@@ -26,7 +26,21 @@
     .event-btn-grp{
         padding-bottom:1em;
         border-bottom:1px solid #ddd;
+		margin-bottom:1em;
     }
+	
+	.toggle-hidden{
+		visibility:hidden;
+		display:none;
+	}
+	.toggle-show {
+		
+	}
+	
+	#locMap {
+		width:100%;
+		height:200px;	
+	}
     </style>
     
 <title>MMLIS RM Program Finder</title>
@@ -57,17 +71,8 @@
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Link</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </li>
+        <li><a href="#" class="" ng-click="saveExport()"><span class="glyphicon glyphicon-floppy-save" ></span> Download JSON</a></li>
+        <li><a href="#" class="" ng-click="fileOpen()"><span class="glyphicon glyphicon-open-file" ></span> Open JSON</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
@@ -136,9 +141,12 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular-sanitize.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular.min.js"></script>
     <script src="data/event-data-editor.json"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLahhfoVtxfV4AIjS-3v8MXCb-zn2ggH8">
+    </script>
 
     <script>
         var dataLoaded = false;
+		var map;
         var app = angular.module('rm_data', ['ui.bootstrap', 'ngSanitize',  'ngRoute','textAngular']);
         app.controller('data_ctrl', function($scope, $http, $filter, $sce) {
             
@@ -154,21 +162,42 @@
                     dataLoaded = true;
                 });
             }
+			
+			
             
             $scope.trix = '<div>Enter Text</div>';            
             
             $scope.newEvent = null;
             $scope.newTopic = null;
-            $scope.editTopic = null;
+			$scope.newLocation = null;
+            $scope.editTopic = 0;
             $scope.editTopicTitle = null;
             $scope.editTopicPresented = null;
             $scope.editTopicRegisterUrl = null;
-
+			
+			
+			$scope.editLocation = 0;
+			$scope.editLocationName = null;
+			$scope.editFacility = null;
+			$scope.editLocationAddress = null;
+			$scope.editLocationCoords = {lat:0, lng:0};
+			
+			var tog = {hide:"toggle-hidden", show:"toggle-show"};
+			$scope.editShowHide = tog.hide;
+			
+			
+//======================================================
+//  Nav Toggle
+//======================================================
             $scope.setNav = function(section){
                 $(".nav_ > li").removeClass("active");
                 $("#nav_"+section).addClass("active");
             }
             
+			
+//======================================================
+//  Topics
+//======================================================
             $scope.getTopic = function(rel){
                 return $scope.eventData.topics[rel];
             }
@@ -182,13 +211,11 @@
             }
             
             $scope.setTopicDescription = function(){
+				$scope.editShowHide = tog.show;
                 $scope.trix = $scope.eventData.topics[$scope.editTopic].description.overviewHtml;
-
-            $scope.editTopicTitle = $scope.eventData.topics[$scope.editTopic].title;
-            $scope.editTopicPresentedBy = $scope.eventData.topics[$scope.editTopic].description.presentedBy;
-            $scope.editTopicRegisterUrl = $scope.eventData.topics[$scope.editTopic].descriptionURL;
-
-
+				$scope.editTopicTitle = $scope.eventData.topics[$scope.editTopic].title;
+				$scope.editTopicPresentedBy = $scope.eventData.topics[$scope.editTopic].description.presentedBy;
+				$scope.editTopicRegisterUrl = $scope.eventData.topics[$scope.editTopic].descriptionURL;
             }
             
             $scope.saveTopicDescription = function(){
@@ -202,50 +229,136 @@
                 }
 
             }
-            
+			
+//======================================================
+//  Locations
+//======================================================
+			$scope.setLocation = function(){
+				$scope.editShowHide = tog.show;
+				$scope.editLocationName = $scope.eventData.locations[$scope.editLocation].locationName;
+				$scope.editFacility = $scope.eventData.locations[$scope.editLocation].facility;
+				$scope.editLocationAddress = $scope.eventData.locations[$scope.editLocation].address;
+				$scope.editLocationCoords = {
+					"lat": $scope.eventData.locations[$scope.editLocation].coordinates.lat,
+					"lng": $scope.eventData.locations[$scope.editLocation].coordinates.lng
+				};
+				$scope.updateLocationMap();
+			}
+			
+			$scope.updateLocationMap = function(){
+				map = new google.maps.Map(document.getElementById('locMap'), {
+				  center: $scope.editLocationCoords,
+				  zoom: 15
+				});	
+				var marker = new google.maps.Marker({
+				  position: $scope.editLocationCoords,
+				  map: map,
+				  title: $scope.editLocationAddress
+				});
+			}
+			
+			$scope.getLatLngGoogle = function(){
+				//http://maps.google.com/maps/api/geocode/json?address=
+				$http.get("//maps.google.com/maps/api/geocode/json?address="+$scope.editLocationAddress).then(function (response) {
+                    var dat = response.data;
+                    //convert date strings into date objects
+					console.log(dat.results);
+                    if(typeof dat.results[0] != "undefined"){
+						$scope.editLocationCoords.lat = dat.results[0].geometry.location.lat;
+						$scope.editLocationCoords.lng = dat.results[0].geometry.location.lng;
+						$scope.updateLocationMap();
+					}
+                    
+                });
+			}
+			
             $scope.getLocation = function(rel){
                 return $scope.eventData.locations[rel].facility;
             }
             
+			
+//======================================================
+//  Events
+//======================================================
+			//Add event button clicked. Modal attached to button
             $scope.showAddEvent = function(){
                 $scope.newEvent = {id:'',location:'',date:'',code:'',url:''};
             }
             
-            $scope.quickDate = function(str){
-                return new Date(str);
-            }
-            
+			//Add a new event
             $scope.addNewEvent = function(){
                 $scope.eventData.events.push($scope.newEvent);
-                //$scope.$apply();
             }
 
             //Watch output/display data change
-            $scope.$watchCollection('eventData', function(newData, oldData) {
-                //$scope.$apply();
-                console.log("data change");
-            });
+//            $scope.$watchCollection('eventData', function(newData, oldData) {
+//
+//            });
             
+			//Delete event on confirm
             $scope.confirmDeleteEvent = function(obj){
-                console.log("deleting event", obj, $scope.eventData.events[$scope.eventData.events.indexOf(obj)]);
+                //console.log("deleting event", obj, $scope.eventData.events[$scope.eventData.events.indexOf(obj)]);
                 $scope.eventData.events.splice($scope.eventData.events.indexOf(obj),1);
-                //$scope.$apply();
             }
+
+			//
+            //$scope.eventTopicMatch = function(rel){
+//                return $scope.getTopic[rel].concat($scope.getLocation(rel));
+//            }
+//            
+//            //Watch output/display data change
+//			$scope.$watchCollection('eventData.events.date', function(newData, oldData) {
+//				console.log("date change", newData, oldData);
+//			});
             
-            $scope.eventTopicMatch = function(rel){
-                
-                return $scope.getTopic[rel].concat($scope.getLocation(rel));
+
+//======================================================
+//  File IO
+//======================================================
+			//Convert data for export and prompt file save
+			$scope.saveExport = function(){
+				var json = JSON.stringify($scope.eventData);
+				var blob = new Blob([json], {type: "application/json"});
+				var url  = URL.createObjectURL(blob);
+				
+				var a = document.createElement('a');
+				a.download    = "education-programs-" + $filter('date')(new Date(),'yyyy.MM.dd') + ".json";
+				console.log(a.download);
+				a.href        = url;
+				a.textContent = "download";
+				a.click();
+			}
+			
+			//Create file upload field and parse loaded json
+			//TODO - Check data/structure before loading into app
+			$scope.fileOpen = function(){
+				var element = document.createElement('div');
+				element.innerHTML = '<input type="file">';
+				var fileInput = element.firstChild;
+				
+				fileInput.addEventListener('change', function() {
+					var file = fileInput.files[0];
+				
+					if (file.name.match(/\.(txt|json)$/)) {
+						var reader = new FileReader();
+				
+						reader.onload = function() {
+							console.log(reader.result);
+							$scope.eventData = JSON.parse(reader.result);
+						};
+				
+						reader.readAsText(file);    
+					} else {
+						alert("File not supported, .txt or .json files only");
+					}
+				});	
+				fileInput.click();
+			}
+			
+			//function for date conversion options if needed.
+			$scope.quickDate = function(str){
+                return new Date(str);
             }
-            
-            //Watch output/display data change
-			$scope.$watchCollection('eventData.events.date', function(newData, oldData) {
-				console.log("date change", newData, oldData);
-			});
-            
-            $scope.$watchCollection('trix', function(newData, oldData) {
-				console.log("trix change", $scope.editTopic);
-                
-			});
 
             
         });
@@ -307,36 +420,36 @@ app.config(['$routeProvider',
 
 
 /* Controllers */
-var dataControllers = angular.module('dataControllers', []);
-dataControllers.controller('locationsControl', ['$scope', '$http', '$routeParams', 
-  function($scope, $http, $routeParams, dataService) {
-        /*$http.get('data/portfolio.json').success(function(data) {
-          $scope.workItems = _.where(data, {"category" : $routeParams.subCategory || "web"});
-          jsonData = data;
-        });*/
-
-    $scope.orderProp = 'id';
-    $scope.category = $routeParams.locationId;
-    routeParams = $routeParams;
-    console.log("category", $scope.category);
-  }]);
-
-dataControllers.controller('topicsControl', ['$scope','$http', '$routeParams', '$sce',
-  function($scope, $http, $routeParams, $sce) {
-        /*$http.get('data/portfolio.json').success(function(data) {
-          first = _.where(data, {"id" : $routeParams.itemId});
-          second = _.where(first[0].images, {"id" : $routeParams.mediaId});
-          $scope.gallery = first[0].images;
-          $scope.dataItem = second[0];
-          $scope.trustedURL = $sce.trustAsUrl($scope.dataItem.fullUrl);
-        }); */
-    $scope.orderProp = 'id';
-    $scope.category = $routeParams.topicId;
-    routeParams = $routeParams;
-    console.log("category", $scope.category);
-    
-    
-  }]);
+//var dataControllers = angular.module('dataControllers', []);
+//dataControllers.controller('locationsControl', ['$scope', '$http', '$routeParams', 
+//  function($scope, $http, $routeParams, dataService) {
+//        /*$http.get('data/portfolio.json').success(function(data) {
+//          $scope.workItems = _.where(data, {"category" : $routeParams.subCategory || "web"});
+//          jsonData = data;
+//        });*/
+//
+//    $scope.orderProp = 'id';
+//    $scope.category = $routeParams.locationId;
+//    routeParams = $routeParams;
+//    console.log("category", $scope.category);
+//  }]);
+//
+//dataControllers.controller('topicsControl', ['$scope','$http', '$routeParams', '$sce',
+//  function($scope, $http, $routeParams, $sce) {
+//        /*$http.get('data/portfolio.json').success(function(data) {
+//          first = _.where(data, {"id" : $routeParams.itemId});
+//          second = _.where(first[0].images, {"id" : $routeParams.mediaId});
+//          $scope.gallery = first[0].images;
+//          $scope.dataItem = second[0];
+//          $scope.trustedURL = $sce.trustAsUrl($scope.dataItem.fullUrl);
+//        }); */
+//    $scope.orderProp = 'id';
+//    $scope.category = $routeParams.topicId;
+//    routeParams = $routeParams;
+//    console.log("category", $scope.category);
+//    
+//    
+//  }]);
 
     </script>
     

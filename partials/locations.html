@@ -1,1 +1,58 @@
 <h2 ng-init="setNav('locations')"  class="text-center">Locations</h2>
+<div class="row event-btn-grp">
+    <div class="col-md-3 btn-group pull-right">
+        <button class="btn btn-success btn-block" id="add_event" ng-click="newLocation()"><span class="glyphicon glyphicon-plus " ></span> New Location </button>
+    </div>
+</div>
+
+<div class="row event-btn-grp">
+	<div class="form-group">
+	    <label for="editTopic">Select a Topic to Edit</label>
+
+		    <select id="editLocation" class="form-control shadow" data-live-search="true" ng-model="editLocation" ng-options="idx as location.locationName for (idx, location) in eventData.locations" ng-change="setLocation()">
+		    </select>
+		
+
+	</div>
+    </div>
+    <div class="{{editShowHide}}">
+        <div class="form-group">
+        
+            <label for="editLocationName">Location Name </label>
+            <input id="editLocationName" ng-model="editLocationName" class="form-control shadow" placeholder="Location Name">
+            <p><small>Internal Name for reference. Include a location name and town to make things easier to recognize for adding events.</small></p>
+                
+            <label for="editFacility">Facility</label>
+            <input id="editFacility" ng-model="editFacility" class="form-control shadow" placeholder="Facility">
+        <br>
+        
+        <label for="editLocationAddress">Address</label>
+        <div class="input-group">
+            
+            <input id="editLocationAddress" ng-model="editLocationAddress" class="form-control shadow" placeholder="Location Address">
+            <span class="input-group-btn">
+            <button class="btn btn-secondary btn-info" id="add_event" ng-click="getLatLngGoogle()"><span class="glyphicon glyphicon-search " ></span> Get Lat/Lng </button>
+            </span>
+        </div>
+        </div> 
+    
+        <div class="row">
+            <h6 class="col-md-1">Latitude</h6><div class="col-md-11">{{editLocationCoords.lat}}</div>
+        </div>
+        
+        <div class="row">
+            <h6 class="col-md-1">Longitude</h6><div class="col-md-11">{{editLocationCoords.lng}}</div>
+        </div>
+        <div class="row event-btn-grp">
+        	<div id="locMap"></div>
+    	</div>
+        <div class="row event-btn-grp">
+            <div class="col-md-3 pull-right">
+            
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-click="saveLocation()">Save</button>
+            </div>
+    	</div>
+   </div>
+  		
+    
+</div>

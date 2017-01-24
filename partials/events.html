@@ -1,7 +1,7 @@
 <h2 ng-init="setNav('events')" class="text-center">Events</h2>
 		<div class="row event-btn-grp">
-            <div class="col-sm-4 btn-group">
-                <button class="btn btn-success btn-block" id="add_event" data-toggle="modal" data-target="#addEventModal" ng-click="showAddEvent()"><span class="glyphicon glyphicon-plus pull-left" ></span> Add Event </button>
+            <div class="col-md-3 btn-group pull-right">
+                <button class="btn btn-success btn-block" id="add_event" data-toggle="modal" data-target="#addEventModal" ng-click="showAddEvent()"><span class="glyphicon glyphicon-plus " ></span> Add Event </button>
             </div>
         </div>
 		<div class="map-results-container" ng-repeat="event in (eventData.events | orderBy: 'date')">
