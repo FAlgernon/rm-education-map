@@ -198,6 +198,21 @@
 //======================================================
 //  Topics
 //======================================================
+            $scope.newTopic = function(){
+                var newTop = {
+                  "id": Date.now(),
+                  "title": "New Topic",
+                  "descriptionURL": "",
+                  "description": {
+                    "presentedBy": "",
+                    "overviewHtml": "Overview.."
+                    }
+                };
+                $scope.eventData.topics.push(newTop);
+                $scope.editTopic = $scope.eventData.topics.indexOf(newTop) + "";
+                $scope.setTopicDescription();
+            }
+
             $scope.getTopic = function(rel){
                 return $scope.eventData.topics[rel];
             }
@@ -233,6 +248,26 @@
 //======================================================
 //  Locations
 //======================================================
+            $scope.newLocation = function(){
+                //add placeholder location to array
+                var newLoc = {
+                  "id": Date.now(),
+                  "locationName": "NewLocation",
+                  "facility": "",
+                  "address": "",
+                  "coordinates": {
+                    "lat": 39.4984581,
+                    "lng": -76.66619149999997
+                  }
+                };
+
+                $scope.eventData.locations.push(newLoc);
+                
+                $scope.editLocation = $scope.eventData.locations.indexOf(newLoc) + "";
+                $scope.setLocation();
+                
+            }
+
 			$scope.setLocation = function(){
 				$scope.editShowHide = tog.show;
 				$scope.editLocationName = $scope.eventData.locations[$scope.editLocation].locationName;
@@ -256,6 +291,20 @@
 				  title: $scope.editLocationAddress
 				});
 			}
+
+            $scope.saveLocation = function(){
+                //$scope.editShowHide = tog.show;
+                if(confirm("Update Location Information?")){
+                    $scope.eventData.locations[$scope.editLocation].locationName = $scope.editLocationName;
+                    $scope.eventData.locations[$scope.editLocation].facility = $scope.editFacility;
+                    $scope.eventData.locations[$scope.editLocation].address = $scope.editLocationAddress;
+                    $scope.eventData.locations[$scope.editLocation].coordinates = {
+                        "lat": $scope.editLocationCoords.lat,
+                        "lng": $scope.editLocationCoords.lng
+                    };
+                }
+
+            }
 			
 			$scope.getLatLngGoogle = function(){
 				//http://maps.google.com/maps/api/geocode/json?address=
