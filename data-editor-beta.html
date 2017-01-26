@@ -83,49 +83,7 @@
 
     <div ng-view class="editor-view"> view </div>
         
-    <!-- Modal -->
-    <div class="modal fade" id="addEventModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Add Event</h4>
-          </div>
-          <div class="modal-body">
-                <div class="map-results-each row">
-                    <div class="result-date col-sm-3">
-                        <input ng-model="newEvent.date" class="form-control shadow" placeholder="Date" type="date">
-
-                    </div>
-
-                    <div class="col-sm-6">
-
-
-                        <select class="form-control shadow" data-live-search="true" ng-model="newEvent.topic" ng-options="topic.id as topic.title for topic in eventData.topics">
-
-                        </select>
-
-
-                        <br>
-                        <select class="form-control shadow" data-live-search="true" ng-model="newEvent.location" ng-options="location.id as location.locationName for location in eventData.locations">
-                        </select>
-                    </div>
-
-                    <div class="col-sm-3">
-                        <input ng-model="newEvent.code" class="form-control shadow" placeholder="Code"><br>
-                        <input ng-model="newEvent.url" class="form-control shadow" placeholder="Register URL">
-                    </div>
-
-
-                </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" ng-click="addNewEvent()" data-dismiss="modal">Save</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    
         
         
         
@@ -153,7 +111,7 @@
             //consider better method of handling data
             //if the data is already loaded into eventData, don't load it again on template update
             if(!dataLoaded){
-                $http.get("data/event-data.json").then(function (response) {
+                $http.get("data/event-data-beta.json").then(function (response) {
                     $scope.eventData = response.data;
                     //convert date strings into date objects
                     for(var i = 0; i < $scope.eventData.events.length; i++){
@@ -167,7 +125,7 @@
             
             $scope.trix = '<div>Enter Text</div>';            
             
-            $scope.newEvent = null;
+            $scope.newEvent = {};
             $scope.newTopic = null;
 			$scope.newLocation = null;
             $scope.editTopic = 0;
@@ -182,8 +140,8 @@
 			$scope.editLocationAddress = null;
 			$scope.editLocationCoords = {lat:0, lng:0};
 			
-			var tog = {hide:"toggle-hidden", show:"toggle-show"};
-			$scope.editShowHide = tog.hide;
+			$scope.tog = {hide:"toggle-hidden", show:"toggle-show"};
+			$scope.editShowHide = $scope.tog.hide;
 			
 			
 //======================================================
@@ -195,6 +153,108 @@
             }
             
 			
+
+			
+
+            
+			
+
+            
+
+//======================================================
+//  File IO
+//======================================================
+			//Convert data for export and prompt file save
+			$scope.saveExport = function(){
+				var json = JSON.stringify($scope.eventData);
+				var blob = new Blob([json], {type: "application/json"});
+				var url  = URL.createObjectURL(blob);
+				
+				var a = document.createElement('a');
+				a.download    = "education-programs-" + $filter('date')(new Date(),'yyyy.MM.dd') + ".json";
+				console.log(a.download);
+				a.href        = url;
+				a.textContent = "download";
+				a.click();
+			}
+			
+			//Create file upload field and parse loaded json
+			//TODO - Check data/structure before loading into app
+			$scope.fileOpen = function(){
+				var element = document.createElement('div');
+				element.innerHTML = '<input type="file">';
+				var fileInput = element.firstChild;
+				
+				fileInput.addEventListener('change', function() {
+					var file = fileInput.files[0];
+				
+					if (file.name.match(/\.(txt|json)$/)) {
+						var reader = new FileReader();
+				
+						reader.onload = function() {
+							//console.log(reader.result);
+							
+                            
+                            $scope.$apply(function(){
+                                $scope.eventData = JSON.parse(reader.result);
+                            });
+                            
+						};
+				
+						reader.readAsText(file); 
+					} else {
+						alert("File not supported, .txt or .json files only");
+					}
+				});	
+				fileInput.click();
+			}
+			
+			//function for date conversion options if needed.
+			$scope.quickDate = function(str){
+                return new Date(str);
+            }
+
+            
+        });
+
+angular.module("rm_data").controller("event_ctrl", function($scope){
+//======================================================
+//  Events
+//======================================================
+			//Add event button clicked. Modal attached to button
+            $scope.showAddEvent = function(){
+                $scope.newEvent = {id:Date.now(),location:'',date:new Date(),code:'',url:''};
+            }
+            
+			//Add a new event
+            $scope.addNewEvent = function(){
+                $scope.eventData.events.push($scope.newEvent);
+                $scope.newEvent = {};
+            }
+
+            //Watch output/display data change
+//            $scope.$watchCollection('eventData', function(newData, oldData) {
+//
+//            });
+            
+			//Delete event on confirm
+            $scope.confirmDeleteEvent = function(obj){
+                //console.log("deleting event", obj, $scope.eventData.events[$scope.eventData.events.indexOf(obj)]);
+                $scope.eventData.events.splice($scope.eventData.events.indexOf(obj),1);
+            }
+
+			//
+            //$scope.eventTopicMatch = function(rel){
+//                return $scope.getTopic[rel].concat($scope.getLocation(rel));
+//            }
+//            
+//            //Watch output/display data change
+//			$scope.$watchCollection('eventData.events.date', function(newData, oldData) {
+//				console.log("date change", newData, oldData);
+//			});
+});
+        
+angular.module("rm_data").controller("topic_ctrl", function($scope){
 //======================================================
 //  Topics
 //======================================================
@@ -226,7 +286,7 @@
             }
             
             $scope.setTopicDescription = function(){
-				$scope.editShowHide = tog.show;
+				$scope.editShowHide = $scope.tog.show;
                 $scope.trix = $scope.eventData.topics[$scope.editTopic].description.overviewHtml;
 				$scope.editTopicTitle = $scope.eventData.topics[$scope.editTopic].title;
 				$scope.editTopicPresentedBy = $scope.eventData.topics[$scope.editTopic].description.presentedBy;
@@ -246,13 +306,41 @@
             }
             
             $scope.deleteCurrentTopic = function(){
-                if(confirm("Delete this topic?")){
+                if(confirm("This will remove this topics and any events attached to it. Continue?")){
+                    
+                    //remove topic
                     $scope.eventData.topics.splice($scope.editTopic,1);
+                    
+                    //hide editor
+                    $scope.editShowHide = $scope.tog.hide;
+                    
+                    // iterate events to remove events associated with topic, and shift references to match new topic indices
+                    for(var i=0; i<$scope.eventData.events.length; i++){
+                        if($scope.eventData.events[i].topic == $scope.editTopic){
+                            //remove events with topic
+                            console.log("removing", $scope.eventData.events[i]);
+                            console.log($scope.eventData.events.splice(i,1));
+                            
+                        }
+                    }
+                    //adjust remaining events for topic references
+                    for(var i=0; i<$scope.eventData.events.length; i++){
+                     if($scope.eventData.events[i].topic>$scope.editTopic){
+                            //shift events topic index refs
+                            $scope.eventData.events[i].topic = $scope.eventData.events[i].topic-1; //shift topic down
+                         
+                            
+                        }
+                    }
+                    
                     $scope.editTopic = 0;
-                    $scope.editShowHide = tog.hide;
+                    
+                    //$scope.$apply();
                 }
             }
-			
+});
+        
+angular.module("rm_data").controller("location_ctrl", function($scope){
 //======================================================
 //  Locations
 //======================================================
@@ -277,7 +365,7 @@
             }
 
 			$scope.setLocation = function(){
-				$scope.editShowHide = tog.show;
+				$scope.editShowHide = $scope.tog.show;
 				$scope.editLocationName = $scope.eventData.locations[$scope.editLocation].locationName;
 				$scope.editFacility = $scope.eventData.locations[$scope.editLocation].facility;
 				$scope.editLocationAddress = $scope.eventData.locations[$scope.editLocation].address;
@@ -315,10 +403,31 @@
             }
             
             $scope.deleteCurrentLocation = function(){
-                if(confirm("Delete this location?")){
+                if(confirm("This will remove this location and any events attached to it. Continue?")){
                     $scope.eventData.locations.splice($scope.editLocation,1);
+                    
+                    $scope.editShowHide = $scope.tog.hide;
+                    
+                    //remove events with location
+                    //shift events location index refs
+                    // iterate events to remove events associated with topic, and shift references to match new topic indices
+                    for(var i=0; i<$scope.eventData.events.length; i++){
+                        
+                        if($scope.eventData.events[i].location == $scope.editLocation){
+                            //remove events with topic
+                            $scope.eventData.events.splice(i,1);
+                        }
+                    }
+                    //adjust remaining events for location references
+                    for(var i=0; i<$scope.eventData.events.length; i++){
+                        if($scope.eventData.events[i].location>$scope.editLocation){
+                            //shift events topic index refs
+                            //console.log("Shifting topic ref ", $scope.eventData.events[i].location, $scope.eventData.events[i].location-1);
+                            $scope.eventData.events[i].location = $scope.eventData.events[i].location-1; //shift topic down
+                        }
+                    }
+                    
                     $scope.editLocation = 0;
-                    $scope.editShowHide = tog.hide;
                 }
             }
 			
@@ -340,95 +449,7 @@
             $scope.getLocation = function(rel){
                 return $scope.eventData.locations[rel].facility;
             }
-            
-			
-//======================================================
-//  Events
-//======================================================
-			//Add event button clicked. Modal attached to button
-            $scope.showAddEvent = function(){
-                $scope.newEvent = {id:'',location:'',date:'',code:'',url:''};
-            }
-            
-			//Add a new event
-            $scope.addNewEvent = function(){
-                $scope.eventData.events.push($scope.newEvent);
-            }
-
-            //Watch output/display data change
-//            $scope.$watchCollection('eventData', function(newData, oldData) {
-//
-//            });
-            
-			//Delete event on confirm
-            $scope.confirmDeleteEvent = function(obj){
-                //console.log("deleting event", obj, $scope.eventData.events[$scope.eventData.events.indexOf(obj)]);
-                $scope.eventData.events.splice($scope.eventData.events.indexOf(obj),1);
-            }
-
-			//
-            //$scope.eventTopicMatch = function(rel){
-//                return $scope.getTopic[rel].concat($scope.getLocation(rel));
-//            }
-//            
-//            //Watch output/display data change
-//			$scope.$watchCollection('eventData.events.date', function(newData, oldData) {
-//				console.log("date change", newData, oldData);
-//			});
-            
-
-//======================================================
-//  File IO
-//======================================================
-			//Convert data for export and prompt file save
-			$scope.saveExport = function(){
-				var json = JSON.stringify($scope.eventData);
-				var blob = new Blob([json], {type: "application/json"});
-				var url  = URL.createObjectURL(blob);
-				
-				var a = document.createElement('a');
-				a.download    = "education-programs-" + $filter('date')(new Date(),'yyyy.MM.dd') + ".json";
-				console.log(a.download);
-				a.href        = url;
-				a.textContent = "download";
-				a.click();
-			}
-			
-			//Create file upload field and parse loaded json
-			//TODO - Check data/structure before loading into app
-			$scope.fileOpen = function(){
-				var element = document.createElement('div');
-				element.innerHTML = '<input type="file">';
-				var fileInput = element.firstChild;
-				
-				fileInput.addEventListener('change', function() {
-					var file = fileInput.files[0];
-				
-					if (file.name.match(/\.(txt|json)$/)) {
-						var reader = new FileReader();
-				
-						reader.onload = function() {
-							console.log(reader.result);
-							$scope.eventData = JSON.parse(reader.result);
-						};
-				
-						reader.readAsText(file);    
-					} else {
-						alert("File not supported, .txt or .json files only");
-					}
-				});	
-				fileInput.click();
-			}
-			
-			//function for date conversion options if needed.
-			$scope.quickDate = function(str){
-                return new Date(str);
-            }
-
-            
-        });
-
-
+});
 
 
 var routeParams = [];
@@ -438,83 +459,30 @@ app.config(['$routeProvider',
     $routeProvider.
       when('/locations/:locationId?', {
         templateUrl: 'partials/locations.html',
-        controller: 'data_ctrl'
+        controller: 'location_ctrl'
       }).
       when('/topics/:topicId?', {
         templateUrl: 'partials/topics.html',
-        controller: 'data_ctrl'
+        controller: 'topic_ctrl'
       }).
-      when('/events/', {
+      when('/events/:eventId?', {
         templateUrl: 'partials/events.html',
-        controller: 'data_ctrl'
+        controller: 'event_ctrl'
       }).
       otherwise({
         templateUrl: 'partials/events.html',
-        controller: 'data_ctrl'
+        controller: 'event_ctrl'
       });
   }]);
   
   /*app.factory('dataService', function() {
-        var portfolioData = {};
+        var _data = {};
         return {
-            getData:function(){return portfolioData;},
-            setData:function(data){portfolioData=data;}
+            getData:function(){return _data;},
+            setData:function(data){_data=data;}
         };
     });*/
 
-/*  portfolioApp.directive('sample', function () {
-    return {
-        restrict: "E",
-        replace: true,
-        transclude: true,
-        template: "<div></div>",
-        controller: function ($scope, $element) {
-            this.act = function (something) {
-               $($element).trigger("imageModal.launch", [something]);
-            };
-        }
-    };
-})*/
-
-/*function ContactController($scope, $routeParams){ 
-    $scope.contactSubmit = function(id, session){
-        console.log("session id - prevent spam with timer", session);
-        console.log(document.getElementById(id));
-    }
-}*/
-
-
-/* Controllers */
-//var dataControllers = angular.module('dataControllers', []);
-//dataControllers.controller('locationsControl', ['$scope', '$http', '$routeParams', 
-//  function($scope, $http, $routeParams, dataService) {
-//        /*$http.get('data/portfolio.json').success(function(data) {
-//          $scope.workItems = _.where(data, {"category" : $routeParams.subCategory || "web"});
-//          jsonData = data;
-//        });*/
-//
-//    $scope.orderProp = 'id';
-//    $scope.category = $routeParams.locationId;
-//    routeParams = $routeParams;
-//    console.log("category", $scope.category);
-//  }]);
-//
-//dataControllers.controller('topicsControl', ['$scope','$http', '$routeParams', '$sce',
-//  function($scope, $http, $routeParams, $sce) {
-//        /*$http.get('data/portfolio.json').success(function(data) {
-//          first = _.where(data, {"id" : $routeParams.itemId});
-//          second = _.where(first[0].images, {"id" : $routeParams.mediaId});
-//          $scope.gallery = first[0].images;
-//          $scope.dataItem = second[0];
-//          $scope.trustedURL = $sce.trustAsUrl($scope.dataItem.fullUrl);
-//        }); */
-//    $scope.orderProp = 'id';
-//    $scope.category = $routeParams.topicId;
-//    routeParams = $routeParams;
-//    console.log("category", $scope.category);
-//    
-//    
-//  }]);
 
     </script>
     

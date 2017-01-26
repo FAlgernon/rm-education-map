@@ -1,3 +1,48 @@
+<!-- Modal -->
+    <div class="modal fade" id="addEventModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Add Event</h4>
+          </div>
+          <div class="modal-body">
+                <div class="map-results-each row">
+                    <div class="result-date col-sm-3">
+                        <input ng-model="newEvent.date" class="form-control shadow" placeholder="Date" type="date">
+                        <br>
+                        <label>Home Study: <input type="checkbox" ng-model="newEvent.homeStudy"></label>
+                    </div>
+
+                    <div class="col-sm-6">
+
+
+                        <select class="form-control shadow" data-live-search="true" ng-model="newEvent.topic" ng-options="topic.id as topic.title for topic in eventData.topics">
+
+                        </select>
+
+
+                        <br>
+                        <select class="form-control shadow" data-live-search="true" ng-model="newEvent.location" ng-options="location.id as location.locationName for location in eventData.locations">
+                        </select>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <input ng-model="newEvent.code" class="form-control shadow" placeholder="Code"><br>
+                        <input ng-model="newEvent.url" class="form-control shadow" placeholder="Register URL">
+                    </div>
+
+
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" ng-click="addNewEvent()" data-dismiss="modal">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 <h2 ng-init="setNav('events')" class="text-center">Events</h2>
 		<div class="row event-btn-grp">
             <div class="col-md-3 btn-group pull-right">
@@ -8,7 +53,7 @@
 			<div class="map-results-each row">
                 <div class="result-date col-sm-2">
                     <!--<input ng-bind="(event.date | date : 'yyyy-MM-dd')" class="form-control shadow" placeholder="Date" type="date">-->
-                     <h4>{{event.date | date : 'MMM dd, yyyy'}}</h4>
+                     <h4>{{event.homeStudy ? 'HOME STUDY' : event.date | date : 'MMM dd, yyyy'}}</h4>
                      <button class="btn btn-danger btn-sm" id="rm_event" ng-click="confirmDeleteEvent(event)"><span class="glyphicon glyphicon-remove-sign"> </span>&nbsp; Remove </button>
                 </div>
 
@@ -37,3 +82,4 @@
 		</div>
         
         <textarea rows="40" style="width:100%">{{eventData | json}}</textarea>
+
