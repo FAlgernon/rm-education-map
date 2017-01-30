@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
 <head>
     
@@ -111,7 +112,7 @@
             //consider better method of handling data
             //if the data is already loaded into eventData, don't load it again on template update
             if(!dataLoaded){
-                $http.get("data/event-data-beta.json").then(function (response) {
+                $http.get("data/event-data-blank.json").then(function (response) {
                     $scope.eventData = response.data;
                     //convert date strings into date objects
                     for(var i = 0; i < $scope.eventData.events.length; i++){
@@ -217,7 +218,7 @@
             
         });
 
-angular.module("rm_data").controller("event_ctrl", function($scope){
+angular.module("rm_data").controller("event_ctrl", function($scope, $http, $filter, $sce){
 //======================================================
 //  Events
 //======================================================
@@ -254,7 +255,7 @@ angular.module("rm_data").controller("event_ctrl", function($scope){
 //			});
 });
         
-angular.module("rm_data").controller("topic_ctrl", function($scope){
+angular.module("rm_data").controller("topic_ctrl", function($scope, $http, $filter, $sce){
 //======================================================
 //  Topics
 //======================================================
@@ -340,7 +341,7 @@ angular.module("rm_data").controller("topic_ctrl", function($scope){
             }
 });
         
-angular.module("rm_data").controller("location_ctrl", function($scope){
+angular.module("rm_data").controller("location_ctrl", function($scope, $http, $filter, $sce){
 //======================================================
 //  Locations
 //======================================================

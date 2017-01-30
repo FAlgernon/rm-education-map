@@ -1,7 +1,7 @@
 <!doctype html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="css/rm-map-pa.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo $stylesheet; ?>">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <script>
         function google_init(){
@@ -112,7 +112,7 @@
                         
                         <div ng-if="event.homeStudy != true">
                         
-                            <a class="rm-ico ico-car event-address" href="https://google.com/maps?q={{eventData.locations[event.location].address}}" target="_blank">{{eventData.locations[event.location].address}}</a>
+                            <a class="rm-ico ico-car event-address" href="https://google.com/maps?q={{getLocation(event.location).address}}" target="_blank">{{getLocation(event.location).facility}}</a>
                         </div>
                     </div>
     
@@ -132,7 +132,7 @@
     <script src="js/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
     <script src="js/ui-bootstrap-tpls-2.3.2.min.js"></script>
-    <script src="data/gmap-styles.js"></script>
+    <script src="<?php echo $gmap_styles; ?>"></script>
     <script src="js/rm-map-reduce.js?nocache"></script>
     
     <script>
@@ -162,7 +162,7 @@
 			$scope.timeLimit = 15; //ms to wait before updating again; 16=60fps
 
 			//Load JSON data
-			$http.get('data/education-programs-pa-2017.json').then(successCallback, errorCallback);
+			$http.get('<?php echo $data_file; ?>').then(successCallback, errorCallback);
 			
 			// Loaded JSON data successfully
 			function successCallback(response){
@@ -206,6 +206,15 @@
                 }
                 return false;
             }
+			
+			// Return Location from unique id
+            $scope.getLocation = function(locationId){
+                for(var i=0;i<$scope.eventData.locations.length;i++){
+                    if($scope.eventData.locations[i].id == locationId)
+                        return $scope.eventData.locations[i];
+                }
+                return false;
+            }
 
 			//Parse Date - for fancy event list date display
 			$scope.parseDate = function(date){
@@ -227,13 +236,16 @@
 			//Get locations to matched events
 			$scope.matchingLocations = function(eventsData){
 				var tmpMatched = [];
+				var tmpLoc = {};
+				tmpLoc.numEvts = 0;
 				for(var i = 0; i < eventsData.length; i++){
                     if(!eventsData[i].homeStudy){
-                        var matchedID = tmpMatched.indexOf($scope.eventData.locations[eventsData[i].location]);
-
+						var mLoc = $scope.getLocation(eventsData[i].location);
+                        var matchedID = tmpMatched.indexOf(mLoc);
+						
                         //if matched event location is not in tmp array, add it
                         if(matchedID==-1){
-                            var tmpLoc = $scope.eventData.locations[eventsData[i].location];
+                            tmpLoc = $scope.getLocation(eventsData[i].location);
                             tmpLoc.numEvts = 1;
                             tmpMatched.push(tmpLoc);
                         }else{
@@ -266,11 +278,6 @@
 			
 			// Open modal for program description links
 			$scope.programDescription = function(t, url){
-				/*$http.get('build.php?r='+$scope.eventData.topics[loc].descriptionURL).then(function(response){
-					$scope.programDescriptionHTML = response.data;		// Set Program Description HTML
-					$scope.modalToggle = $scope.modalStates.visible;	// Show Modal
-				}, errorCallback);*/
-				console.log("get topic", t);
 				$scope.displayTopic = $scope.getTopic(t);
 				$scope.registerUrl = url;
 				$scope.programDescriptionHTML = $scope.displayTopic.description.overviewHtml;		// Set Program Description HTML
@@ -376,18 +383,22 @@ app.filter('dateSuffix', function($filter) {
 app.filter('eventFilter', function() {
 	return function (events, searchFilter, $scope){
 		var filtered = [];
-        //console.log("search filter", searchFilter.topic);
+		//console.log("searchFilter", searchFilter);
 		if(events!=null && events.length > 0){
 			for (var i = 0; i < events.length; i++) {
 				var _event = events[i];
 				var matched = false;
+				var dZ = new Date(_event.date);
+				 dZ.setHours(0,0,0,0);//force 0 time
+				
 				//Filter by Location
-				if(searchFilter.location === null ||  _event.location === $scope.eventData.locations.indexOf(searchFilter.location) || _event.homeStudy){
+				if(searchFilter.location === null ||  _event.location === searchFilter.location.id){
 					//Filter by Topic
 					if (searchFilter.topic === null || _event.topic === searchFilter.topic.id){
 						//Filter by Date
-                        
-						if ((searchFilter.date === null || typeof searchFilter.date == 'undefined') || new Date(_event.date).getTime() == new Date(searchFilter.date).getTime() || _event.homeStudy){
+						if ((searchFilter.date === null || typeof searchFilter.date == 'undefined') || dZ.getTime() == new Date(searchFilter.date).getTime() || _event.homeStudy){
+							//if(dZ.getTime() == new Date(searchFilter.date).getTime())
+								//console.log(searchFilter.code, _event.code);
 							//Filter by Code
 							if (searchFilter.code === null || _event.code == searchFilter.code.code){
 								matched = true;	
