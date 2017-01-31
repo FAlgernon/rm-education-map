@@ -307,7 +307,7 @@ angular.module("rm_data").controller("topic_ctrl", function($scope, $http, $filt
             }
             
             $scope.deleteCurrentTopic = function(){
-                if(confirm("This will remove this topics and any events attached to it. Continue?")){
+                if(confirm("Remove Topic. Any events attached to it may become broken. Continue?")){
                     
                     //remove topic
                     $scope.eventData.topics.splice($scope.editTopic,1);
@@ -316,23 +316,23 @@ angular.module("rm_data").controller("topic_ctrl", function($scope, $http, $filt
                     $scope.editShowHide = $scope.tog.hide;
                     
                     // iterate events to remove events associated with topic, and shift references to match new topic indices
-                    for(var i=0; i<$scope.eventData.events.length; i++){
+                   /* for(var i=0; i<$scope.eventData.events.length; i++){
                         if($scope.eventData.events[i].topic == $scope.editTopic){
                             //remove events with topic
                             console.log("removing", $scope.eventData.events[i]);
                             console.log($scope.eventData.events.splice(i,1));
                             
                         }
-                    }
+                    }*/
                     //adjust remaining events for topic references
-                    for(var i=0; i<$scope.eventData.events.length; i++){
+                    /*for(var i=0; i<$scope.eventData.events.length; i++){
                      if($scope.eventData.events[i].topic>$scope.editTopic){
                             //shift events topic index refs
                             $scope.eventData.events[i].topic = $scope.eventData.events[i].topic-1; //shift topic down
                          
                             
                         }
-                    }
+                    }*/
                     
                     $scope.editTopic = 0;
                     
@@ -404,7 +404,7 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
             }
             
             $scope.deleteCurrentLocation = function(){
-                if(confirm("This will remove this location and any events attached to it. Continue?")){
+                if(confirm("Remove Location. Any events attached to this location may become broken. Continue?")){
                     $scope.eventData.locations.splice($scope.editLocation,1);
                     
                     $scope.editShowHide = $scope.tog.hide;
@@ -412,21 +412,21 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
                     //remove events with location
                     //shift events location index refs
                     // iterate events to remove events associated with topic, and shift references to match new topic indices
-                    for(var i=0; i<$scope.eventData.events.length; i++){
+                   /* for(var i=0; i<$scope.eventData.events.length; i++){
                         
                         if($scope.eventData.events[i].location == $scope.editLocation){
                             //remove events with topic
                             $scope.eventData.events.splice(i,1);
                         }
-                    }
+                    }*/
                     //adjust remaining events for location references
-                    for(var i=0; i<$scope.eventData.events.length; i++){
+                    /*for(var i=0; i<$scope.eventData.events.length; i++){
                         if($scope.eventData.events[i].location>$scope.editLocation){
                             //shift events topic index refs
                             //console.log("Shifting topic ref ", $scope.eventData.events[i].location, $scope.eventData.events[i].location-1);
                             $scope.eventData.events[i].location = $scope.eventData.events[i].location-1; //shift topic down
                         }
-                    }
+                    }*/
                     
                     $scope.editLocation = 0;
                 }

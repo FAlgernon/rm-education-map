@@ -12,7 +12,7 @@ if($_GET['t']=='pa'){
 }else if($_GET['t']=='pad'){
 	$data_file = "data/education-programs-pad-2017.json";
 	$stylesheet = "css/rm-map-pa.css";
-	$gmap_styles = "data/gmap-styles-pad.js";
+	$gmap_styles = "data/gmap-styles-pa.js";
 	require_once('rm-program-finder.php');
 	
 }else{
