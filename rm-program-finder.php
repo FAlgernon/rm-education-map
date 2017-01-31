@@ -26,14 +26,14 @@
     	<div class="col-sm-12">Program Description <a href="" ng-click="modalClose()" class="rm-ico ico-x close-x pull-right"><i>x</i></a></div>
         
     </div>
-    <!--ng-bind-html="programDescriptionHTML"-->
+    
         <div ng-model="modalOpenClose" class="modal-content-container">
         	<div ng-include="modalTemplate"></div>
             
         </div>
     </div>
     
-    <div id="modalOverlay" ng-click="modalClose()"></div>
+    <div id="modalOverlay" ng-click="modalClose()"> &nbsp; </div>
     
 </div>
 
@@ -100,9 +100,9 @@
                     <div class="result-date col-md-2" ng-switch="event.homeStudy">
                         <ul ng-switch-when="true" class="home-study">
                             <li><span class="glyphicon glyphicon-home"></span></li>
-                            <li>Home Study</li>
+                            <li>{{getEventTypeName(event.type)}}</li>
                         </ul>
-                        <ul ng-switch-default>
+                        <ul ng-class="{'special':(getEventType(event.type)=='2')}" ng-switch-default>
                             <li>{{parseDate(event.date) | date:"MMM"}}</li>
                             <li><b>{{parseDate(event.date) | date:"d"}}</b><sup>{{parseDate(event.date) | dateSuffix}} </sup><sub>{{parseDate(event.date) | date:"EEE"}}</sub></li>
                             <li>{{parseDate(event.date) | date:"yyyy"}}</li>
@@ -150,6 +150,9 @@
 			
 			//Search Filter Settings
 			$scope.search = {location:null, code:null, date:null, topic:null, $:null};
+			
+			//event type display names
+			$scope.eventTypes = ["Event", "Event Special", "Home Study", "Online Course"];
 			
 			//Modal Options
 			$scope.displayTopic = {};
@@ -217,6 +220,18 @@
                 }
                 return false;
             }
+			
+			$scope.getEventType = function(type){
+				if(type == null || typeof type == "undefined"){
+					return "1";
+				}else {
+					return type;
+				}
+			}
+									 
+			$scope.getEventTypeName = function(type){
+				return $scope.eventTypes[parseInt($scope.getEventType(type))-1];
+			}
 
 			//Parse Date - for fancy event list date display
 			$scope.parseDate = function(date){

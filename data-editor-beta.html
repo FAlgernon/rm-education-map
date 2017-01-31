@@ -122,6 +122,7 @@
                 });
             }
 			
+					
 			
             
             $scope.trix = '<div>Enter Text</div>';            
@@ -143,6 +144,8 @@
 			
 			$scope.tog = {hide:"toggle-hidden", show:"toggle-show"};
 			$scope.editShowHide = $scope.tog.hide;
+			
+			$scope.eventTypes = ["Event", "Event Special", "Home Study", "Online Course"];
 			
 			
 //======================================================
@@ -189,7 +192,7 @@
 				fileInput.addEventListener('change', function() {
 					var file = fileInput.files[0];
 				
-					if (file.name.match(/\.(txt|json)$/)) {
+					if (file.name.match(/\.(txt|json|js)$/)) {
 						var reader = new FileReader();
 				
 						reader.onload = function() {
@@ -202,9 +205,9 @@
                             
 						};
 				
-						reader.readAsText(file); 
+						reader.readAsText(file);
 					} else {
-						alert("File not supported, .txt or .json files only");
+						alert("File not supported, .txt, .js or .json files only");
 					}
 				});	
 				fileInput.click();
@@ -224,11 +227,22 @@ angular.module("rm_data").controller("event_ctrl", function($scope, $http, $filt
 //======================================================
 			//Add event button clicked. Modal attached to button
             $scope.showAddEvent = function(){
-                $scope.newEvent = {id:Date.now(),location:'',date:new Date(),code:'',url:''};
+                $scope.newEvent = {
+					id:Date.now(),
+					location:'',
+					date:new Date(),
+					code:'',
+					url:'',
+					type:"1"
+				};
             }
             
 			//Add a new event
             $scope.addNewEvent = function(){
+				if($scope.newEvent.type>2){
+					$scope.newEvent.homeStudy=true;
+					console.log("ishomestudy");
+				}
                 $scope.eventData.events.push($scope.newEvent);
                 $scope.newEvent = {};
             }
@@ -243,6 +257,18 @@ angular.module("rm_data").controller("event_ctrl", function($scope, $http, $filt
                 //console.log("deleting event", obj, $scope.eventData.events[$scope.eventData.events.indexOf(obj)]);
                 $scope.eventData.events.splice($scope.eventData.events.indexOf(obj),1);
             }
+			
+			$scope.getEventType = function(type){
+				if(type == null || typeof type == "undefined"){
+					return "1";
+				}else {
+					return type;
+				}
+			}
+									 
+			$scope.getEventTypeName = function(type){
+				return $scope.eventTypes[parseInt($scope.getEventType(type))-1];
+			}
 
 			//
             //$scope.eventTopicMatch = function(rel){
