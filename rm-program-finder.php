@@ -28,7 +28,7 @@
     </div>
     
         <div ng-model="modalOpenClose" class="modal-content-container">
-        	<div ng-include="modalTemplate"></div>
+        	<div ng-include="modalTemplate" id="boundProgDesc"></div>
             
         </div>
     </div>
@@ -192,6 +192,7 @@
 
 			// Failed to load JSON data
 			function errorCallback(error){
+				alert("Failed to load event data. Please try again.");
 				console.log(error);
 			}
 
@@ -290,7 +291,13 @@
 //======================================================
 			// Close Modal
 			$scope.modalClose = function(){
+				$(".modal-content-container").scrollTop(0);
 				$scope.modalToggle = $scope.modalStates.hidden;
+				$scope.programDescriptionHTML = "closed";
+				$scope.registerUrl = "";
+				$scope.displayTopic = null;
+				
+				
 			}
 			
 			// Open modal for program description links
@@ -299,7 +306,7 @@
 				$scope.registerUrl = url;
 				$scope.programDescriptionHTML = $scope.displayTopic.description.overviewHtml;		// Set Program Description HTML
 				$scope.modalToggle = $scope.modalStates.visible;	// Show Modal
-				
+				//console.log("programDescriptionHTML", $scope.programDescriptionHTML);
 				
 				
 			};
@@ -400,7 +407,7 @@ app.filter('dateSuffix', function($filter) {
 app.filter('eventFilter', function() {
 	return function (events, searchFilter, $scope){
 		var filtered = [];
-		//console.log("searchFilter", searchFilter);
+
 		if(events!=null && events.length > 0){
 			for (var i = 0; i < events.length; i++) {
 				var _event = events[i];
@@ -414,8 +421,7 @@ app.filter('eventFilter', function() {
 					if (searchFilter.topic === null || _event.topic === searchFilter.topic.id){
 						//Filter by Date
 						if ((searchFilter.date === null || typeof searchFilter.date == 'undefined') || dZ.getTime() == new Date(searchFilter.date).getTime() || _event.homeStudy){
-							//if(dZ.getTime() == new Date(searchFilter.date).getTime())
-								//console.log(searchFilter.code, _event.code);
+		
 							//Filter by Code
 							if (searchFilter.code === null || _event.code == searchFilter.code.code){
 								matched = true;	
