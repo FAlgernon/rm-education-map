@@ -1,6 +1,10 @@
 <?php
 header('Access-Control-Allow-Origin: *');
 
+/* 
+* Grabs html from URL and returns a parsed section between <div id="content"> and <h2> <a name="locations" 
+*/
+
 if(isset($_GET["r"])){
 	// /(?<=\<div id\=\"content\"\>).*?(?=\<h2\>\<a name\=\"locations\")/is
 	//echo preg_replace( "/\r|\n/", "", file_get_contents("http:".$_GET["r"]) );
