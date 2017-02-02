@@ -16,14 +16,15 @@
     </script>
 
     <style>
-    .editor-view {
+    .message-view {
             margin-top: 5em;
     }
 
     .map-results-container {
-        margin-top:1em;
+        margin-top:1.5em;
         border-bottom:1px solid #ddd;
     }
+	
     .event-btn-grp{
         padding-bottom:1em;
         border-bottom:1px solid #ddd;
@@ -42,6 +43,30 @@
 		width:100%;
 		height:200px;	
 	}
+		
+		.result-date {
+			position: relative;
+			top:-2.75em;
+		}
+		.result-date h5 {
+			margin-bottom:1em;
+			font-weight:bold;
+			
+		}
+		.result-date h5>span {
+			color:#555;
+			position:relative;
+			left:1em;
+			background-color: #fff;
+			padding: .25em 1em;
+			border:1px solid #ddd;
+			border-radius:1em;
+		}
+		
+		.map-results-each:hover .result-date h5>span {
+			color:#111;
+			background-image:linear-gradient(180deg,rgb(255,255,255) 0%,rgb(191,223,255) 100%);
+		}
     </style>
     
 <title>MMLIS RM Program Finder</title>
@@ -78,15 +103,11 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-
-
-
+	
+	<div class="{{message.class}} message-view" role="alert">{{message.text}}</div>
 
     <div ng-view class="editor-view"> view </div>
-        
-    
-        
-        
+
         
 </div>
 
@@ -99,12 +120,12 @@
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular-rangy.min.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular-sanitize.min.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.0/textAngular.min.js"></script>
-    <script src="data/event-data-editor.json"></script>
+
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLahhfoVtxfV4AIjS-3v8MXCb-zn2ggH8"></script>
 
     <script>
         var dataLoaded = false;
-		var map;
+		var map = null;
         var app = angular.module('rm_data', ['ui.bootstrap', 'ngSanitize',  'ngRoute','textAngular']);
         app.controller('data_ctrl', function($scope, $http, $filter, $sce) {
             
@@ -114,16 +135,14 @@
                 $http.get("data/event-data-blank.json").then(function (response) {
                     $scope.eventData = response.data;
                     //convert date strings into date objects
-                    for(var i = 0; i < $scope.eventData.events.length; i++){
-                        $scope.eventData.events[i].date = $scope.quickDate($scope.eventData.events[i].date);
-                    }
+                    
+					convertDates();
                     dataLoaded = true;
+					
                 });
             }
 			
-					
 			
-            
             $scope.trix = '<div>Enter Text</div>';            
             
             $scope.newEvent = {};
@@ -133,18 +152,47 @@
             $scope.editTopicTitle = null;
             $scope.editTopicPresented = null;
             $scope.editTopicRegisterUrl = null;
+			$scope.eventTypes = ["Event", "Event Special", "Home Study", "Online Course"];
+			
+			// Messages
+			$scope.message = {"class":"", "text":""};   
 			
 			
-			$scope.editLocation = 0;
-			$scope.editLocationName = null;
-			$scope.editFacility = null;
-			$scope.editLocationAddress = null;
-			$scope.editLocationCoords = {lat:0, lng:0};
-			
+
 			$scope.tog = {hide:"toggle-hidden", show:"toggle-show"};
 			$scope.editShowHide = $scope.tog.hide;
 			
-			$scope.eventTypes = ["Event", "Event Special", "Home Study", "Online Course"];
+			
+			
+			
+
+//======================================================
+//  UI Message
+//======================================================
+			$scope.setMessage = function(alertType, alertMessage){
+				//types success info warning danger
+				$scope.message.class = "alert alert-" + alertType;
+				$scope.message.text = alertMessage;
+			}
+			
+			$scope.clearMessage = function(){
+				$scope.message.class = "";
+				$scope.message.text = "";
+			}
+			
+			$scope.$watch('eventData', function(newData, oldData) {
+				$scope.clearMessage();
+				if($scope.eventData.topics.length == 0){
+					$scope.setMessage("warning", "No Topics found. Open a JSON data file, or add a Topic to attach to an Event.");
+				}
+				if($scope.eventData.locations.length == 0){
+					$scope.setMessage("warning", "No Locations found. Open a JSON data file, or add a Location to attach to an Event.");
+				}
+				if($scope.eventData.events.length == 0){
+					$scope.setMessage("warning", "No Events found. Open a JSON data file, or add an Event to start.");
+				}
+				
+			},true);
 			
 			
 //======================================================
@@ -155,14 +203,7 @@
                 $("#nav_"+section).addClass("active");
             }
             
-			
-
-			
-
-            
-			
-
-            
+         
 
 //======================================================
 //  File IO
@@ -193,18 +234,31 @@
 				
 					if (file.name.match(/\.(txt|json|js)$/)) {
 						var reader = new FileReader();
-				
+						var tmpTest = {};
 						reader.onload = function() {
-							//console.log(reader.result);
-							
-                            
-                            $scope.$apply(function(){
-                                $scope.eventData = JSON.parse(reader.result);
-                            });
+							//try to parse the file loaded
+							try{
+								tmpTest = JSON.parse(reader.result);
+								if(angular.isDefined(tmpTest.events) && angular.isDefined(tmpTest.locations) && angular.isDefined(tmpTest.topics)){
+									$scope.$apply(function(){
+										$scope.eventData = tmpTest;
+										convertDates();
+									});
+								}else{
+									throw "improper format";
+								}
+							}catch(err){
+								alert("Unable to render file, improper data format.");
+							}
+
                             
 						};
-				
-						reader.readAsText(file);
+						try{
+							reader.readAsText(file);
+						}catch(err){
+							alert("This does not appear to be a text file.");
+						}
+						
 					} else {
 						alert("File not supported, .txt, .js or .json files only");
 					}
@@ -216,6 +270,12 @@
 			$scope.quickDate = function(str){
                 return new Date(str);
             }
+			
+			function convertDates(){
+				for(var i = 0; i < $scope.eventData.events.length; i++){
+                   $scope.eventData.events[i].date = $scope.quickDate($scope.eventData.events[i].date);
+                }
+			}
 
             
         });
@@ -268,6 +328,10 @@ angular.module("rm_data").controller("event_ctrl", function($scope, $http, $filt
 			$scope.getEventTypeName = function(type){
 				return $scope.eventTypes[parseInt($scope.getEventType(type))-1];
 			}
+			
+
+	
+			
 
 			//
             //$scope.eventTopicMatch = function(rel){
@@ -367,6 +431,12 @@ angular.module("rm_data").controller("topic_ctrl", function($scope, $http, $filt
 });
         
 angular.module("rm_data").controller("location_ctrl", function($scope, $http, $filter, $sce){
+			$scope.editLocation = 0;
+			$scope.editLocationName = null;
+			$scope.editFacility = null;
+			$scope.editLocationAddress = null;
+			$scope.editLocationCoords = {lat:0, lng:0};
+			
 //======================================================
 //  Locations
 //======================================================
@@ -389,6 +459,8 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
                 $scope.setLocation();
                 
             }
+			
+			
 
 			$scope.setLocation = function(){
 				$scope.editShowHide = $scope.tog.show;
@@ -399,7 +471,7 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 					"lat": $scope.eventData.locations[$scope.editLocation].coordinates.lat,
 					"lng": $scope.eventData.locations[$scope.editLocation].coordinates.lng
 				};
-				$scope.updateLocationMap();
+				setTimeout(function(){$scope.updateLocationMap();},250);
 			}
 			
 			$scope.updateLocationMap = function(){

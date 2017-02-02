@@ -57,50 +57,72 @@
         </div>
       </div>
     </div>
-
+<div class="input-group">
+	 <span class="input-group-addon"> Data Set Name </span>
+	 <input class="form-control shadow" ng-model="eventData.name" type="text" placeholder="Data Set Name">
+</div>
 <h2 ng-init="setNav('events')" class="text-center">Events</h2>
 		<div class="row event-btn-grp">
             <div class="col-md-3 btn-group pull-right">
                 <button class="btn btn-success btn-block" id="add_event" data-toggle="modal" data-target="#addEventModal" ng-click="showAddEvent()"><span class="glyphicon glyphicon-plus " ></span> Add Event </button>
             </div>
         </div>
-		<div class="map-results-container" ng-repeat="event in (eventData.events | orderBy: 'date')">
+		<div class="map-results-container row" ng-repeat="event in (eventData.events | orderBy: 'date')">
 			<div class="map-results-each row">
-                <div class="result-date col-sm-2">
+                <div class="result-date col-sm-3">
                     <!--<input ng-bind="(event.date | date : 'yyyy-MM-dd')" class="form-control shadow" placeholder="Date" type="date">-->
                  	 
-                     <h4>
-						 {{ event.type > 2 ? getEventTypeName(event.type) : (event.date | date : 'MMM dd, yyyy')}}</span>
-                     </h4>
+                     <h5>
+						 <span>{{ event.type > 2 ? getEventTypeName(event.type) : (event.date | date : 'MMM dd, yyyy')}}</span>
+                   	</h5>
+                    	<input type="date" ng-model="event.date" class="form-control">
                      
+                     <br>
+                     <div class="input-group">
+						 <span class="input-group-addon"> Type </span>
                      <select class="form-control shadow" ng-model="event.type" ng-init="event.type = getEventType(event.type)">
 						<option value="1">Event</option>
 						<option value="2">Event Special</option>
 						<option value="3">Home Study</option>
 						<option value="4">Online Course</option>
 					 </select>
+					</div>
+					
                      
-                     <button class="btn btn-danger btn-sm" id="rm_event" ng-click="confirmDeleteEvent(event)"><span class="glyphicon glyphicon-remove-sign"> </span>&nbsp; Remove </button>
                 </div>
 
-				<div class="col-sm-7">
+				<div class="col-sm-5">
 
-                    
+                    <div class="input-group">
+						 <span class="input-group-addon"> Topic </span>
                     <select name="topic_select" id="topic-select" class="form-control shadow" data-live-search="true" ng-model="event.topic" ng-options="topic.id as topic.title for topic in eventData.topics">
                      
                     </select>
-                    
+					</div>
+                   
                     
 					<br>
+                   <div class="input-group">
+						 <span class="input-group-addon"> Location </span>
                     <select name="location_select" id="location-select" class="form-control shadow" data-live-search="true" ng-model="event.location" ng-options="location.id as location.locationName for location in eventData.locations">
                     </select>
+					</div>
 				</div>
 
-				<div class="col-sm-3">
-					<input ng-model="event.code" class="form-control shadow" placeholder="Code"><br>
+				<div class="col-sm-2">
+					<div class="input-group">
+						 <span class="input-group-addon"> Code </span>
+                     	<input ng-model="event.code" class="form-control shadow" placeholder="Code">
+					</div>
+					
+					<br>
 					<input ng-model="event.url" class="form-control shadow" placeholder="Register URL">
                     <br>
                     
+				</div>
+				
+				<div class="col-sm-2">
+					<button class="btn btn-danger btn-sm btn-block" id="rm_event" ng-click="confirmDeleteEvent(event)"><span class="glyphicon glyphicon-remove-sign"> </span>&nbsp; Remove </button>
 				</div>
 
 
