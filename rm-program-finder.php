@@ -130,10 +130,9 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLahhfoVtxfV4AIjS-3v8MXCb-zn2ggH8&callback=google_init">
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>-->
     <script src="js/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
-    <script src="js/ui-bootstrap-tpls-2.3.2.min.js"></script>
+    <script src="js/ui-bootstrap-tpls-2.3.2.min.js"></script><!--templates customized-->
     <script src="<?php echo $gmap_styles; ?>"></script>
     <script src="js/rm-map-reduce.js?nocache"></script>
     
@@ -190,13 +189,18 @@
                 
 			};
 
-			// Failed to load JSON data
+			/**
+			* Failed to load JSON data
+			*/
 			function errorCallback(error){
 				alert("Failed to load event data. Please try again.");
-				console.log(error);
 			}
 
-			// Return City from Address string
+			/**
+			* Return City from Address string
+			* @param {String} address street, city, state
+			* @return {String}
+			*/
 			$scope.getCity = function(address){
 		        address = address.trim();// Trim the address.
 		        var comma = address.indexOf(',');// Find the comma.
@@ -204,7 +208,11 @@
 		        return address.split(",")[1].trim();
 			}
             
-            // Return Topic from unique id
+			/**
+			* Return Topic from unique id
+			* @param {Integer} topicId Unique ID
+			* @return {Object}
+			*/
             $scope.getTopic = function(topicId){
                 for(var i=0;i<$scope.eventData.topics.length;i++){
                     if($scope.eventData.topics[i].id == topicId)
@@ -213,7 +221,11 @@
                 return false;
             }
 			
-			// Return Location from unique id
+			/**
+			* Return Location from unique id
+			* @param {Integer} locationId Unique ID
+			* @return {Object}
+			*/
             $scope.getLocation = function(locationId){
                 for(var i=0;i<$scope.eventData.locations.length;i++){
                     if($scope.eventData.locations[i].id == locationId)
@@ -222,6 +234,12 @@
                 return false;
             }
 			
+			/**
+			* Returns the type of event for eventTypes
+			* if no event type defined, use default "1"
+			* @param {Integer} type index of type
+			* @return {Integer}
+			*/
 			$scope.getEventType = function(type){
 				if(type == null || typeof type == "undefined"){
 					return "1";
@@ -229,17 +247,29 @@
 					return type;
 				}
 			}
-									 
+								
+			/**
+			* Return Event Type string/description
+			* @param {Integer} type index of type
+			* @return {String}
+			*/
 			$scope.getEventTypeName = function(type){
 				return $scope.eventTypes[parseInt($scope.getEventType(type))-1];
 			}
 
-			//Parse Date - for fancy event list date display
+			/**
+			* Date conversion options if needed.
+			* @param {String} date
+			* @return {Date}
+			*/
 			$scope.parseDate = function(date){
 				return Date.parse(date);
 			}
             
-            //Return count of matched results array
+			/**
+			* Return count/description of matched results array
+			* @return {String}
+			*/
             $scope.resultCount = function(){
                 var response = "";
                 var datLen = $scope.filteredData.length;
@@ -251,7 +281,10 @@
                 return response;
             }
 			
-			//Get locations to matched events
+			/**
+			* Return Locations attached to list of events
+			* @return {Array}
+			*/
 			$scope.matchingLocations = function(eventsData){
 				var tmpMatched = [];
 				var tmpLoc = {};
@@ -275,103 +308,112 @@
 				return tmpMatched;
 			}
 			
-			//Watch output/display data change
+			/**
+			* Watch output/display data change
+			* Update map when filtered data changes
+			*/
 			$scope.$watchCollection('filteredData', function(newData, oldData) {
                 //if(typeof $scope.eventData != undefined)
 				    gMap.updateMap($scope.matchingLocations(newData));
 			});
-			
-			//Watch output/display data change
-			$scope.$watchCollection('search', function(newData, oldData) {
-				//console.log("search watch", $scope.search);
-			});
-			
+						
 //======================================================
 //  Program Description Modal
 //======================================================
-			// Close Modal
+			/**
+			* Close Modal
+			*/
 			$scope.modalClose = function(){
 				$(".modal-content-container").scrollTop(0);
 				$scope.modalToggle = $scope.modalStates.hidden;
 				$scope.programDescriptionHTML = "closed";
 				$scope.registerUrl = "";
 				$scope.displayTopic = null;
-				
-				
 			}
-			
-			// Open modal for program description links
+			 
+			/**
+			* Open modal for program description links
+			* @param {Integer} t Unique Topic ID
+			* @param {String} url link to registration page
+			*/
 			$scope.programDescription = function(t, url){
 				$scope.displayTopic = $scope.getTopic(t);
 				$scope.registerUrl = url;
-				$scope.programDescriptionHTML = $scope.displayTopic.description.overviewHtml;		// Set Program Description HTML
-				$scope.modalToggle = $scope.modalStates.visible;	// Show Modal
-				//console.log("programDescriptionHTML", $scope.programDescriptionHTML);
-				
-				
+				$scope.programDescriptionHTML = $scope.displayTopic.description.overviewHtml;// Set Program Description HTML
+				$scope.modalToggle = $scope.modalStates.visible;// Show Modal
 			};
 
 //======================================================
 //  ui.bootstrap Datepicker
 //======================================================
-		//Datepicker clear button
-		  $scope.clear = function() {
+
+		/**
+		* Datepicker clear date
+		* (Button "Clear")
+		*/
+		$scope.clear = function() {
 			$scope.search.date = null;
-		  };
-		
-		  $scope.inlineOptions = {};
-		
-		  $scope.dateOptions = {
+		};
+
+		//Datepicker config
+		$scope.inlineOptions = {};
+		$scope.dateOptions = {
 			dateDisabled: disabled,
 			formatYear: 'yy',
 			startingDay: 0,
 			showWeeks: false
-		  };
+		};
 
-		  // Disable dates not in events data
-		  function disabled(data) {
-			var cDate = data.date;  
-			var check = $scope.checkDateInEvents(cDate);
-			return data.mode == 'day' && !check;
-		  }
-		  
-            //check calendar dates to event dates
-			$scope.checkDateInEvents = function($date){
-			 for(var i = 0; i < $scope.eventData.events.length; i++){
-				 var dA = new Date($scope.eventData.events[i].date);
-				 var dB = new Date($date);
-				 dA.setHours(0,0,0,0);
-				 dB.setHours(0,0,0,0);
-				 
-				 
-				if(dA.getTime() == dB.getTime()){
-                    //skip this one if it is a home study course
-					if($scope.eventData.events[i].homeStudy)
-                        return false;
-                    
-                    //otherwise if matched
-					return true;
-					break;
-				}
-			 }
-			 return false;
+		/**
+		* Disable dates not in events data
+		* @param {Object} data
+		* @param {String} data.date - Event Date
+		*/
+		function disabled(data) {
+		var cDate = data.date;  
+		var check = $scope.checkDateInEvents(cDate);
+		return data.mode == 'day' && !check;
+		}
+
+		/**
+		* Check calendar date to event dates
+		* @param {String} date - Event Date
+		*/
+		$scope.checkDateInEvents = function($date){
+		 for(var i = 0; i < $scope.eventData.events.length; i++){
+			 var dA = new Date($scope.eventData.events[i].date);
+			 var dB = new Date($date);
+			 dA.setHours(0,0,0,0);//ensure date time set to 0
+			 dB.setHours(0,0,0,0);
+			if(dA.getTime() == dB.getTime()){
+				//skip this one if it is a home study course - they should not show up on calendar
+				if($scope.eventData.events[i].homeStudy)
+					return false;
+
+				//otherwise if matched
+				return true;
+				break;
 			}
-		
-		  //Datepicker popup
-		  $scope.popup1 = {
+		 }
+		 return false;
+		}
+
+		//Datepicker popup Config
+		$scope.popup1 = {
 			opened: false
-		  };
-		  $scope.open1 = function($event) {
+		};
+		$scope.open1 = function($event) {
 			$scope.popup1.opened = true;
-		  };
+		};
+
 		
-		  $scope.setDate = function(year, month, day) {
+		$scope.setDate = function(year, month, day) {
 			$scope.dt = new Date(year, month, day);
-		  };
-		
-		  $scope.formats = ['MM/dd/yyyy'];//, 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-		  $scope.format = $scope.formats[0];
-		  $scope.altInputFormats = ['M!/d!/yyyy'];
+		};
+
+		$scope.formats = ['MM/dd/yyyy'];//, 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+		$scope.format = $scope.formats[0];
+		$scope.altInputFormats = ['M!/d!/yyyy'];
   
 //======================================================
 //  "INFINITE" SCROLL

@@ -1,4 +1,4 @@
-/*
+/**
 *      Placeholder for google map styles
 *      https://mapstyle.withgoogle.com/
 */
@@ -6,8 +6,10 @@ if (typeof gmap_styles === 'undefined') {
     var gmap_styles = {}; //failed to load map styles
 }
 
-/*
-*       gMap
+/**
+* gMap
+* Controls and maintains Google Map object methods & references
+* @returns { init | parseAddresses | displayMarkers | updateMap }
 */
 var gMap = (function() {
 	"use strict";
@@ -21,15 +23,15 @@ var gMap = (function() {
 	var zoomLevelOnSingle = 12; //zoom level when displaying single marker
 	var zoomLevelDefault = 7; // start zoom level
 	
-    /*
-    *       RM App Init
+    /**
+    * Public Init
     */
     var init = function(){
         gmap_init(gmap_styles);
     };
 
-    /*
-    *       Initialize Google Map
+    /**
+    * Initialize Google Map
     */
     var gmap_init = function(gmap_styles) {
 		
@@ -53,18 +55,21 @@ var gMap = (function() {
 		});
     };
     
-	// This function will iterate over locations array
-	// creating markers with createMarker function
+	/**
+    * Display Markers for locations
+	* @param {Array} locations - Array of Location Objects
+	* @param {Object} locations.coordinates - latitude & Longitutde
+	* @param {String} locations.facility - display name of location
+	* @param {String} locations.address - Street address of location
+    */
 	function displayMarkers(locations) {
 		_locations = locations;
+		console.log("display markes", locations);
 		var latlng = null;
 		
 		//sets the map bounds and zoom level according to markers position
 		var bounds = new google.maps.LatLngBounds();
-
-		 // Iterate locations
-		// 		Create markers 
-		//		Extend bounds
+		
 		for(var i = 0; i < locations.length; i++) {
 			var lat = locations[i].coordinates.lat;
 			var lng = locations[i].coordinates.lng;
@@ -72,8 +77,12 @@ var gMap = (function() {
 			var name = locations[i].facility;
 			var address = parseAddress(locations[i].address);
 			_locations[i]._address = address;
+			_locations[i].city = locations[i].city;
+			_locations[i].display = locations[i].display;
+
+				
 			var _loc = locations[i]; //locations filter reference for binding to map marker
-			createMarker(latlng, name, address.city, address.state, address.zip, i, _loc); //add a marker
+			createMarker(latlng, name, i, _loc); //add a marker
 			bounds.extend(latlng); //size map to fit marker
 		}
 		
@@ -87,8 +96,11 @@ var gMap = (function() {
 	   }
 	}
 	
-	// creates each marker and sets their Info Window content
-	function createMarker(latlng, name, address, state, zip, num, _loc) {
+	/**
+    * Adds a marker to markers[] Array
+	* Sets marker infoWindow event listeners
+    */
+	function createMarker(latlng, name, num, _loc) {
 		var marker = new google.maps.Marker({
 			map: map,
 			position: latlng,
@@ -107,7 +119,7 @@ var gMap = (function() {
 			map.setCenter(marker.getPosition());
 			
 			
-			//get to angular ref
+			//set angular ref
 			var scope = angular.element($("#map-container")).scope();
 				//update angular location to match selected on map.
 				scope.$apply(function(num){
@@ -135,9 +147,7 @@ var gMap = (function() {
 		// mouseover event on map marker
 		google.maps.event.addListener(marker, 'mouseover', function() {
 			var iwContent = getIWContent(num, 1);
-			
 			infoWindow.setContent(iwContent);
-			
 			infoWindow.open(map, marker);
 		});
 		
@@ -145,41 +155,68 @@ var gMap = (function() {
 		
 	}
 	
-	// update map with new markers
+/*	function getCity(coords){
+		console.log("getcity");
+		var geocoder = new google.maps.Geocoder();
+		var geolocate = new google.maps.LatLng(coords.lat, coords.lng);
+		var retCity = "--";
+		geocoder.geocode({'latLng': geolocate}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+			   var result;
+			   if (results.length > 1) {
+				 result = results[1];
+			   } else {
+				 result = results[0];
+			   }
+			   retCity = result.address_components[2].long_name + ', ' + result.address_components[3].long_name;
+			 }
+		}); 
+		return retCity;
+	}*/
+	
+	/**
+    * Update map with new markers
+	* @param {Array} locations - Array of Location Objects
+    */
 	function updateMap(locations){
 		deleteMarkers();
 		displayMarkers(locations);
 	}
 	
-	// Sets the map on all markers in the array.
-      function setMapOnAll(map) {
-        for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(map);
-        }
-      }
-	  
-	 // Removes the markers from the map, but keeps them in the array.
-      function clearMarkers() {
+	/**
+    * Sets the map on all markers in the array.
+	* @param {Object} map - Google map
+    */
+	function setMapOnAll(map) {
+		for (var i = 0; i < markers.length; i++) {
+		  markers[i].setMap(map);
+		}
+	}
+	   
+	/**
+    * Removes markers from map
+    */
+	function clearMarkers() {
 		if(isInfoWindowOpen(infoWindow)){
 			infoWindow.close();
 		}
-        setMapOnAll(null);
-      }
-	  
-	 // Shows any markers currently in the array.
-      function showMarkers() {
-        setMapOnAll(map);
-      }
+		setMapOnAll(null);
+	}
 
-      // Deletes all markers in the array by removing references to them.
-      function deleteMarkers() {
-        clearMarkers();
-        markers = [];
-      }
+	/**
+    * Deletes all markers in the array by removing references to them.
+    */ 
+	function deleteMarkers() {
+		clearMarkers();
+		markers = [];
+	}
     
-	// function gets information from events that
-	// match location for marker
-	// and creates content for infowindow
+	/**
+	* Creates content for infowindow
+	* @param {Integer} num - Location index
+	* @param {Integer} type - info window type
+	* @returns {String}
+    */
 	function getIWContent(num, type) {
 		var contentString = '';
 		var mouse;
@@ -187,7 +224,7 @@ var gMap = (function() {
 		if(type === 1) {
 			mouse = true;
 			contentString = '<div id="iw_container" style="font-family: Verdana, Arial, Helvetica, sans-serif">' +
-				'<div class="iw_title">' + _locations[num]._address.state + '</div>' +
+				'<div class="iw_title">' + _locations[num].display + '</div>' +
 				'<div class="iw-content"><div class="iw-subTitle">' + _locations[num].facility + '<br>' + _locations[num].numEvts + ' Event' + (_locations[num].numEvts>1?'s':'') + '</div>' ;
 		} else {
 			mouse = false;
@@ -196,10 +233,14 @@ var gMap = (function() {
 				'<div class="iw-content">';
 		}
 
-		return contentString; // return content for infowindow
+		return contentString;
 	}
 	
-	//Check if infoWindow is open or set
+	/**
+    * Check if infoWindow is open or set
+	* @param {Object} infoWindow - infoWindow reference
+	* @returns {Boolean}
+    */
 	function isInfoWindowOpen(infoWindow){
 		if(infoWindow===null){
 			return false;
@@ -209,49 +250,26 @@ var gMap = (function() {
 		return (map !== null && typeof map !== "undefined");
 	}
     
-    //parses address into street address, state and zip
+	/**
+    * Parses address into street address, state and zip
+	* @param {String} address
+    */ 
     function parseAddress(address) {
         address = address.trim();
         var returned = {};
         var comma = address.indexOf(',');
-        returned.city = address.slice(0, comma);
+        returned._city = address.slice(0, comma);
         var after = address.substring(comma + 2); // The string after the comma, +2 so that we skip the comma and the space.
         var space = after.lastIndexOf(' ');
         returned.state = after.slice(0, space);
         returned.zip = after.substring(space + 1);
-        //returned.lat = lat;
-        //returned.lng = lng;
         return returned;
-    }
-    
-	// unused - return array without duplicate items
-    function getUnique(data, opt){
-        var uniqueData = [];
-        for(var i = 0; i < data.length; i++) {
-            var m = (opt === undefined) ? data[i] : data[opt];
-            if(!uniqueData.contains(m)) {
-                uniqueData.push(m);
-            }
-        }
-    } 
-    
-	// parse all the addresses in an array of addresses
-    function parseAddresses(data){
-        var tmpData = [];
-        for(var i=0; i<data.length;i++){
-            var parsed = parseAddress(data[i].address);
-            if(!tmpData.contains(parsed.city)){
-            	tmpData.push(parsed.city);
-			}
-        }
-        return tmpData;
+		
+		
     }
     
     return {
 		"init": init,
-        "parseAddresses" : parseAddresses,
-        "getUnique" : getUnique,
-		"displayMarkers" : displayMarkers,
 		"updateMap" : updateMap
     };
     

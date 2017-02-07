@@ -7,7 +7,7 @@
 
 <div class="row event-btn-grp">
 	<div class="form-group">
-	    <label for="editTopic">Select a Topic to Edit</label>
+	    <label for="editLocation">Select a Location to Edit</label>
 
 		    <select id="editLocation" class="form-control shadow" data-live-search="true" ng-model="editLocation" ng-options="idx as location.locationName for (idx, location) in eventData.locations" ng-change="setLocation()">
 		    </select>
@@ -42,6 +42,9 @@
         
         <div class="row">
             <h6 class="col-md-1">Longitude</h6><div class="col-md-11">{{editLocationCoords.lng}}</div>
+        </div>
+        <div class="row">
+            <h6 class="col-md-1">Display</h6><div class="col-md-11">{{editLocationDisplay}}</div>
         </div>
         <div class="row">
         	<div id="locMap"></div>

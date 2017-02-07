@@ -271,6 +271,8 @@ app.controller('data_ctrl', function($scope, $http, $filter, $sce) {
 	
 	/**
 	* Date conversion options if needed.
+	* @param {String}
+	* @return {Date}
 	*/
 	$scope.quickDate = function(str){
 		return new Date(str);
@@ -331,6 +333,7 @@ angular.module("rm_data").controller("event_ctrl", function($scope, $http, $filt
 	/**
 	* Returns the type of event for eventTypes
 	* if no event type defined, use default "1"
+	* @param {Integer}
 	* @returns {Number}
 	*/
 	$scope.getEventType = function(type){
@@ -343,6 +346,7 @@ angular.module("rm_data").controller("event_ctrl", function($scope, $http, $filt
 
 	/**
 	* Returns Event Type Name 
+	* @param {Integer}
 	* @returns {String}
 	*/
 	$scope.getEventTypeName = function(type){
@@ -424,6 +428,7 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 	$scope.editFacility = null;
 	$scope.editLocationAddress = null;
 	$scope.editLocationCoords = {lat:0, lng:0};
+	$scope.editLocationDisplay = null;
 
 
 	/**
@@ -436,6 +441,7 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 		  "locationName": "NewLocation",
 		  "facility": "",
 		  "address": "",
+		  "display": "",
 		  "coordinates": {
 			"lat": 39.4984581,
 			"lng": -76.66619149999997
@@ -456,6 +462,7 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 		$scope.editLocationName = $scope.eventData.locations[$scope.editLocation].locationName;
 		$scope.editFacility = $scope.eventData.locations[$scope.editLocation].facility;
 		$scope.editLocationAddress = $scope.eventData.locations[$scope.editLocation].address;
+		$scope.editLocationDisplay = $scope.eventData.locations[$scope.editLocation].display;
 		$scope.editLocationCoords = {
 			"lat": $scope.eventData.locations[$scope.editLocation].coordinates.lat,
 			"lng": $scope.eventData.locations[$scope.editLocation].coordinates.lng
@@ -488,12 +495,31 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 			$scope.eventData.locations[$scope.editLocation].locationName = $scope.editLocationName;
 			$scope.eventData.locations[$scope.editLocation].facility = $scope.editFacility;
 			$scope.eventData.locations[$scope.editLocation].address = $scope.editLocationAddress;
+			$scope.eventData.locations[$scope.editLocation].city = $scope.editLocationDisplay;
 			$scope.eventData.locations[$scope.editLocation].coordinates = {
 				"lat": $scope.editLocationCoords.lat,
 				"lng": $scope.editLocationCoords.lng
 			};
-		}
+			
+			//second try location
+				/*if($scope.editLocationDisplay == null || $scope.eventData.locations[$scope.editLocation].city == ""){
+					var geocoder = new google.maps.Geocoder();
+					var geolocate = new google.maps.LatLng($scope.editLocationCoords.lat, $scope.editLocationCoords.lng);
 
+					geocoder.geocode({'latLng': geolocate}, function(results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+					   var result;
+					   if (results.length > 1) {
+						 result = results[1];
+					   } else {
+						 result = results[0];
+					   }
+					   $scope.eventData.locations[$scope.editLocation].city = result.address_components[2].long_name + ', ' + result.address_components[3].long_name;
+						console.log("got city", $scope.eventData.locations[$scope.editLocation].city);
+					 }  
+					});  
+				}*/
+		}
 	}
 
 	/**
@@ -524,6 +550,12 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 				$scope.editLocationCoords.lat = dat.results[0].geometry.location.lat;
 				$scope.editLocationCoords.lng = dat.results[0].geometry.location.lng;
 				$scope.updateLocationMap();
+			}
+			//set city
+			if(angular.isDefined(dat.results[0].address_components)){
+				$scope.editLocationDisplay =  dat.results[0].address_components[2].long_name; //Display by type city, state
+				var filtered = dat.results[0].filter(function(a){ return a.id == some_id_you_want })[0];
+				console.log()
 			}
 		});
 	}
