@@ -172,7 +172,6 @@
                 gMap.init(); //initialize google map
 				$scope.eventData = response.data;
 				$scope.dataLoaded=true;
-                
 			};
 
 			/**
