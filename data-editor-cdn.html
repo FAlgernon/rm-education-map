@@ -97,18 +97,21 @@
         
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-route.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-rangy.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-sanitize.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.min.js"></script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLahhfoVtxfV4AIjS-3v8MXCb-zn2ggH8"></script>
-
+<p>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-route.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-rangy.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-sanitize.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.min.js"></script>
+  
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLahhfoVtxfV4AIjS-3v8MXCb-zn2ggH8"></script>
+</p>
+<p>&nbsp; </p>
+    
 <script>
 var dataLoaded = false;
 var map = null;
@@ -421,6 +424,9 @@ angular.module("rm_data").controller("topic_ctrl", function($scope, $http, $filt
 //  Locations Controller
 //======================================================
 angular.module("rm_data").controller("location_ctrl", function($scope, $http, $filter, $sce){
+	
+	//Google Geocode component Types - Will match first Type based on order in this array
+	var componentPriority = ['locality', 'administrative_area_level_3', 'neighborhood'];
 
 	//temporary for data editing before saving to eventData
 	$scope.editLocation = 0;
@@ -428,7 +434,7 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 	$scope.editFacility = null;
 	$scope.editLocationAddress = null;
 	$scope.editLocationCoords = {lat:0, lng:0};
-	$scope.editLocationDisplay = null;
+	$scope.editLocationComponents = {city: "", state: ""};
 
 
 	/**
@@ -441,7 +447,7 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 		  "locationName": "NewLocation",
 		  "facility": "",
 		  "address": "",
-		  "display": "",
+		  "components": {city:"", state:""},
 		  "coordinates": {
 			"lat": 39.4984581,
 			"lng": -76.66619149999997
@@ -458,16 +464,24 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 	* (Select Location ng-change)
 	*/
 	$scope.setLocation = function(){
+		var _location = $scope.eventData.locations[$scope.editLocation];
 		$scope.editShowHide = $scope.tog.show;
-		$scope.editLocationName = $scope.eventData.locations[$scope.editLocation].locationName;
-		$scope.editFacility = $scope.eventData.locations[$scope.editLocation].facility;
-		$scope.editLocationAddress = $scope.eventData.locations[$scope.editLocation].address;
-		$scope.editLocationDisplay = $scope.eventData.locations[$scope.editLocation].display;
+		$scope.editLocationName = angular.isDefined(_location.locationName) ? _location.locationName : "";
+		$scope.editFacility = angular.isDefined(_location.facility) ? _location.facility : "";
+		$scope.editLocationAddress = angular.isDefined(_location.address) ? _location.address : "";
+
 		$scope.editLocationCoords = {
-			"lat": $scope.eventData.locations[$scope.editLocation].coordinates.lat,
-			"lng": $scope.eventData.locations[$scope.editLocation].coordinates.lng
+			"lat": angular.isDefined(_location.coordinates) ? _location.coordinates.lat : "",
+			"lng": angular.isDefined(_location.coordinates) ? _location.coordinates.lng : ""
 		};
-		setTimeout(function(){$scope.updateLocationMap();},250);//Sometimes map graphics do not load unless delayed
+		$scope.editLocationComponents = {
+			"city": angular.isDefined(_location.components) ? _location.components.city : "",
+			"state": angular.isDefined(_location.components) ? _location.components.state : ""
+		};
+		
+		
+		setTimeout(function(){$scope.updateLocationMap();},30);//Sometimes map graphics do not load unless delayed until after visibility toggle
+		
 	}
 
 	/**
@@ -495,30 +509,11 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 			$scope.eventData.locations[$scope.editLocation].locationName = $scope.editLocationName;
 			$scope.eventData.locations[$scope.editLocation].facility = $scope.editFacility;
 			$scope.eventData.locations[$scope.editLocation].address = $scope.editLocationAddress;
-			$scope.eventData.locations[$scope.editLocation].city = $scope.editLocationDisplay;
 			$scope.eventData.locations[$scope.editLocation].coordinates = {
 				"lat": $scope.editLocationCoords.lat,
 				"lng": $scope.editLocationCoords.lng
 			};
-			
-			//second try location
-				/*if($scope.editLocationDisplay == null || $scope.eventData.locations[$scope.editLocation].city == ""){
-					var geocoder = new google.maps.Geocoder();
-					var geolocate = new google.maps.LatLng($scope.editLocationCoords.lat, $scope.editLocationCoords.lng);
-
-					geocoder.geocode({'latLng': geolocate}, function(results, status) {
-					if (status == google.maps.GeocoderStatus.OK) {
-					   var result;
-					   if (results.length > 1) {
-						 result = results[1];
-					   } else {
-						 result = results[0];
-					   }
-					   $scope.eventData.locations[$scope.editLocation].city = result.address_components[2].long_name + ', ' + result.address_components[3].long_name;
-						console.log("got city", $scope.eventData.locations[$scope.editLocation].city);
-					 }  
-					});  
-				}*/
+			$scope.eventData.locations[$scope.editLocation].components = $scope.editLocationComponents;
 		}
 	}
 
@@ -551,14 +546,36 @@ angular.module("rm_data").controller("location_ctrl", function($scope, $http, $f
 				$scope.editLocationCoords.lng = dat.results[0].geometry.location.lng;
 				$scope.updateLocationMap();
 			}
-			//set city
+			//ES6 array.find() get city and state from google geocode
 			if(angular.isDefined(dat.results[0].address_components)){
-				$scope.editLocationDisplay =  dat.results[0].address_components[2].long_name; //Display by type city, state
-				var filtered = dat.results[0].filter(function(a){ return a.id == some_id_you_want })[0];
-				console.log()
+				var city = matchLocalityPriority(dat.results[0].address_components).short_name;//locality
+				var state = dat.results[0].address_components.find(x => x.types[0] === 'administrative_area_level_1').short_name;//administrative_area_level_1
+				$scope.editLocationDisplay = city + ', ' + state;
+				$scope.editLocationComponents.city = city;
+				$scope.editLocationComponents.state = state;
+				
 			}
 		});
 	}
+	
+	/**
+	* Matches the first locality matching a set Type 
+	* @param {Array} components - address components from google geocode
+	* @return {Object} first matched address component
+	* @return {Object} "Not Found" value if nothing was matched.
+	*/
+	function matchLocalityPriority(components){
+		for(var cv=0;cv<componentPriority.length;cv++){
+			for(var i=0;i<components.length;i++){
+				if(components[i].types.indexOf(componentPriority[cv])>-1){
+					return components[i];
+					break;
+				}
+			}
+		}
+		return {short_name:"Not Found"};
+	}
+	
 });
 
 
@@ -584,9 +601,6 @@ app.config(['$routeProvider',
         controller: 'event_ctrl'
       });
   }]);
-
-
-    </script>
-    
+</script>
 </body>
 </html>

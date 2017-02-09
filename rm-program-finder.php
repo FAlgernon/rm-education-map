@@ -65,7 +65,7 @@
                  <div class="form-group">
                     <label>Location</label>
                     <!-- "location.city for location in eventData.locations track by location.id" -->
-                     <select name="location_select" id="location-select" class="form-control shadow" data-live-search="true" ng-model="search.location" ng-options="location.facility group by location.city for location in eventData.locations">
+                     <select name="location_select" id="location-select" class="form-control shadow" data-live-search="true" ng-model="search.location" ng-options="location.facility group by location.components.city for location in eventData.locations | orderBy:'components.city'">
                         <option value="" ng-selected="true">Any</option>
                     </select>
                     
@@ -74,7 +74,7 @@
                 <!-- Search Code Filter -->
                 <div class="form-group">
                     <label>Code</label>
-                    <select name="code_select" id="code-select" class="form-control shadow" data-live-search="true" ng-model="search.code" ng-options="event.code for event in eventData.events">
+                    <select name="code_select" id="code-select" class="form-control shadow" data-live-search="true" ng-model="search.code" ng-options="event.code for event in eventData.events | orderBy:'code'">
                         <option value="" ng-selected="true">Any</option>
                     </select>
                 </div>
@@ -143,7 +143,6 @@
 			
 			//Data Arrays
             $scope.eventData = [];
-            $scope.uniqueLocations = [];
 			$scope.filteredData = [];
             $scope.dataLoaded = false;
 			
@@ -166,26 +165,13 @@
 			$scope.timeLimit = 15; //ms to wait before updating again; 16=60fps
 
 			//Load JSON data
-			$http.get(jsonFile).then(successCallback, errorCallback);
+			$http.get(jsonFile).then(successCallback, errorCallback).catch(console.error);
 			
 			// Loaded JSON data successfully
 			function successCallback(response){
                 gMap.init(); //initialize google map
 				$scope.eventData = response.data;
 				$scope.dataLoaded=true;
-				
-				if($scope.eventData.locations != null) {
-					var tmpData = [];
-			        for(var i=0; i < $scope.eventData.locations.length;i++){
-			            var city = $scope.getCity($scope.eventData.locations[i].address);
-			            $scope.eventData.locations[i].city = city;
-			            if(tmpData.indexOf(city)==-1){
-				            tmpData.push(city);
-				        }
-			        }
-			        $scope.uniqueLocations = tmpData;	
-				}
-                
                 
 			};
 
@@ -196,17 +182,6 @@
 				alert("Failed to load event data. Please try again.");
 			}
 
-			/**
-			* Return City from Address string
-			* @param {String} address street, city, state
-			* @return {String}
-			*/
-			$scope.getCity = function(address){
-		        address = address.trim();// Trim the address.
-		        var comma = address.indexOf(',');// Find the comma.
-		        //return address.slice(1, comma);// Pull out the city.
-		        return address.split(",")[1].trim();
-			}
             
 			/**
 			* Return Topic from unique id

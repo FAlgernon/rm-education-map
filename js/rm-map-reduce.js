@@ -9,7 +9,7 @@ if (typeof gmap_styles === 'undefined') {
 /**
 * gMap
 * Controls and maintains Google Map object methods & references
-* @returns { init | parseAddresses | displayMarkers | updateMap }
+* @returns { init | updateMap }
 */
 var gMap = (function() {
 	"use strict";
@@ -64,7 +64,6 @@ var gMap = (function() {
     */
 	function displayMarkers(locations) {
 		_locations = locations;
-		console.log("display markes", locations);
 		var latlng = null;
 		
 		//sets the map bounds and zoom level according to markers position
@@ -74,13 +73,7 @@ var gMap = (function() {
 			var lat = locations[i].coordinates.lat;
 			var lng = locations[i].coordinates.lng;
 			latlng = new google.maps.LatLng(lat, lng);
-			var name = locations[i].facility;
-			var address = parseAddress(locations[i].address);
-			_locations[i]._address = address;
-			_locations[i].city = locations[i].city;
-			_locations[i].display = locations[i].display;
-
-				
+			var name = locations[i].facility;	
 			var _loc = locations[i]; //locations filter reference for binding to map marker
 			createMarker(latlng, name, i, _loc); //add a marker
 			bounds.extend(latlng); //size map to fit marker
@@ -154,25 +147,7 @@ var gMap = (function() {
 		markers.push(marker);
 		
 	}
-	
-/*	function getCity(coords){
-		console.log("getcity");
-		var geocoder = new google.maps.Geocoder();
-		var geolocate = new google.maps.LatLng(coords.lat, coords.lng);
-		var retCity = "--";
-		geocoder.geocode({'latLng': geolocate}, function(results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-			   var result;
-			   if (results.length > 1) {
-				 result = results[1];
-			   } else {
-				 result = results[0];
-			   }
-			   retCity = result.address_components[2].long_name + ', ' + result.address_components[3].long_name;
-			 }
-		}); 
-		return retCity;
-	}*/
+
 	
 	/**
     * Update map with new markers
@@ -219,15 +194,12 @@ var gMap = (function() {
     */
 	function getIWContent(num, type) {
 		var contentString = '';
-		var mouse;
 
 		if(type === 1) {
-			mouse = true;
 			contentString = '<div id="iw_container" style="font-family: Verdana, Arial, Helvetica, sans-serif">' +
-				'<div class="iw_title">' + _locations[num].display + '</div>' +
+				'<div class="iw_title">' + _locations[num].components.city + ", " + _locations[num].components.state + '</div>' +
 				'<div class="iw-content"><div class="iw-subTitle">' + _locations[num].facility + '<br>' + _locations[num].numEvts + ' Event' + (_locations[num].numEvts>1?'s':'') + '</div>' ;
 		} else {
-			mouse = false;
 			contentString = '<div id="iw_container" style="font-family: Verdana, Arial, Helvetica, sans-serif">' +
 				'<div class="iw_title">' + _locations[num].facility + '<br>' + _locations[num].address +  '</div>'  + 
 				'<div class="iw-content">';
@@ -249,24 +221,6 @@ var gMap = (function() {
 		var map = infoWindow.getMap();
 		return (map !== null && typeof map !== "undefined");
 	}
-    
-	/**
-    * Parses address into street address, state and zip
-	* @param {String} address
-    */ 
-    function parseAddress(address) {
-        address = address.trim();
-        var returned = {};
-        var comma = address.indexOf(',');
-        returned._city = address.slice(0, comma);
-        var after = address.substring(comma + 2); // The string after the comma, +2 so that we skip the comma and the space.
-        var space = after.lastIndexOf(' ');
-        returned.state = after.slice(0, space);
-        returned.zip = after.substring(space + 1);
-        return returned;
-		
-		
-    }
     
     return {
 		"init": init,
